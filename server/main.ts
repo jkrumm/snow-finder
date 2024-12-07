@@ -3,31 +3,63 @@ import { Router } from "jsr:@oak/oak/router";
 import { oakCors } from "https://deno.land/x/cors/mod.ts";
 import routeStaticFilesFrom from "./util/routeStaticFilesFrom.ts";
 import { Weather } from "./data/weather.ts";
-
+import {
+  generatePowderQualityIndex,
+  PowderQualityIndex,
+} from "./util/powder-quality.helper.ts";
+import { DateTime } from "luxon";
+import { isElapsed } from "./util/date.helper.ts";
 
 export const app = new Application();
 const router = new Router();
 
 app.use(
-    oakCors({
-      origin: "http://localhost:3000"
-    }),
+  oakCors({
+    origin: "http://localhost:3000",
+  }),
 );
 
 export const weather = await Weather.init();
+
+const pqiMap = new Map<string, {
+  date: DateTime;
+  powderQualityIndex: PowderQualityIndex[];
+}>();
 
 router.get("/api/resorts", async (context) => {
   context.response.body = await weather.getResortDtos();
 });
 
-router.get("/api/resorts/:id", async (context) => {
+router.get("/api/pqi/:id", async (context) => {
   const id = context.params.id;
 
   if (!id) {
     throw new Error("Id not given");
   }
 
-  context.response.body = await weather.getResort(id);
+  const existingPqi = pqiMap.get(id);
+
+  if (existingPqi && !isElapsed(existingPqi.date, 60)) {
+    context.response.body = existingPqi.powderQualityIndex;
+    return;
+  }
+
+  const costPrevention = false;
+  if (costPrevention) {
+    context.response.body = [];
+    return;
+  }
+
+  const resort = await weather.getResort(id);
+
+  const pqi = await generatePowderQualityIndex(resort);
+
+  pqiMap.set(id, {
+    date: DateTime.now(),
+    powderQualityIndex: pqi,
+  });
+
+  context.response.body = pqi;
 });
 
 app.use(router.routes());

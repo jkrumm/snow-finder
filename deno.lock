@@ -4,6 +4,7 @@
     "jsr:@oak/commons@1": "1.0.0",
     "jsr:@oak/oak@*": "17.1.3",
     "jsr:@oak/oak@^17.1.3": "17.1.3",
+    "jsr:@openai/openai@^4.75.0": "4.75.0",
     "jsr:@std/assert@*": "1.0.8",
     "jsr:@std/assert@1": "1.0.8",
     "jsr:@std/assert@^1.0.8": "1.0.8",
@@ -73,6 +74,9 @@
         "jsr:@std/path",
         "npm:path-to-regexp"
       ]
+    },
+    "@openai/openai@4.75.0": {
+      "integrity": "acf16b1749d71117838dc3382dd3065c58eb6dca4706138b0af34742ac67cdc9"
     },
     "@std/assert@1.0.8": {
       "integrity": "ebe0bd7eb488ee39686f77003992f389a06c3da1bbd8022184804852b2fa641b",
@@ -1882,6 +1886,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@oak/oak@^17.1.3",
+      "jsr:@openai/openai@^4.75.0",
       "jsr:@std/assert@1",
       "npm:@blueprintjs/core@^5.16.0",
       "npm:@blueprintjs/icons@^5.15.0",

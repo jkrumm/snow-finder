@@ -104,7 +104,6 @@ export function Weather() {
                   onClick={() => {
                     window.location.href = `/resort/${resort.id}`;
                   }}
-                  disabled
                 >
                   Details
                 </Button>
