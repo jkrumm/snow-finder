@@ -71,8 +71,6 @@ export async function generatePowderQualityIndex(
   }
   `;
 
-  console.log(userPrompt);
-
   const completion = await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [{ role: "system", content: systemPrompt }, {

@@ -17,7 +17,6 @@ async function fetchPqiData() {
   for (const resort of favoriteResortsThatNeedPqi) {
     const matchingPqi = pqiData.find((pqi) => pqi.id === resort.id);
     if (!matchingPqi) {
-      console.log("no matching pqi", resort);
       return;
     }
     for (const forecast of resort.dailyForecasts!) {
@@ -46,6 +45,5 @@ export async function fetchResorts() {
   if (resorts.value.length > 0) return;
   const response = await fetch(Deno.env.get("BASE_URL") + "/api/resorts");
   resorts.value = await response.json();
-  console.log("resorts fetched", resorts.value.map((resort) => ({name: resort.name, id: resort.id})) );
   await fetchPqiData();
 }
