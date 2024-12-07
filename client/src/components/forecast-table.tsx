@@ -50,7 +50,6 @@ export const ForecastTable = (
   }, [selectedView]);
 
   useEffect(() => {
-    console.log(props.hourlyForecasts);
     setSelectedDate(
       new Date(forecasts[0].date).toLocaleDateString("de-DE", {
         day: "2-digit",
@@ -141,7 +140,7 @@ export const ForecastTable = (
               key={forecast.date}
               className={`grid grid-cols-[1fr_40px_70px_50px_60px_50px] ${
                 index + 1 !== forecasts.length && "border-b"
-              } border-[#404854]`}
+              } border-[#404854] ${index < 6 && "cursor-pointer"}`}
               onClick={() => {
                 if (index > 5) return;
                 setSelectedView(index);

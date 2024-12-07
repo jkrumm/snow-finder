@@ -4,17 +4,22 @@ import { ResortDto } from "../../shared/dtos/weather.dto.ts";
 import { computed, signal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { ForecastTable } from "./components/forecast-table.tsx";
-import { MultiSelect } from "@blueprintjs/select";
 import {
   Button,
   ButtonGroup,
   Card,
   Elevation,
-  H2,
+  H1,
+    H2,
   H3,
+  Icon,
+  Menu,
   MenuItem,
   SegmentedControl,
   Switch,
+  Tab,
+  Tabs,
+  TabsExpander,
 } from "@blueprintjs/core";
 
 const resorts = signal<ResortDto[]>([]);
@@ -25,23 +30,38 @@ const favorites = signal<string[]>([
   "axamer-lizum",
   "hochfuegen",
   "westendorf",
+  "stanton-stchristoph",
 ]);
 
-const resortIds = computed<string[]>(() => {
-  return resorts.value.map((resort) => resort.id);
-});
-
-const favoriteResorts = computed<ResortDto[]>(() => {
-  return resorts.value.filter((resort) => favorites.value.includes(resort.id));
-});
-
-const compareResortIds = signal<string[]>([]);
-
-const showDailyForecasts = signal<boolean>(true);
+const showForecasts = signal<boolean>(true);
 
 const sorting = signal<"freshSnow" | "mountainHeight" | "tmax" | "sun">(
   "freshSnow",
 );
+
+const favoriteResorts = computed<ResortDto[]>(() => {
+  return resorts.value.filter((resort) => favorites.value.includes(resort.id))
+    .sort(
+      (a: ResortDto, b: ResortDto) => {
+        if (sorting.value === "freshSnow") {
+          return b.freshSnow - a.freshSnow;
+        }
+        if (sorting.value === "mountainHeight") {
+          return b.mountainHeight - a.mountainHeight;
+        }
+        if (sorting.value === "tmax") {
+          return b.dailyForecasts![0].tmax - a.dailyForecasts![0].tmax;
+        }
+        if (sorting.value === "sun") {
+          return b.dailyForecasts![0].sun - a.dailyForecasts![0].sun;
+        }
+        return 0;
+      },
+    );
+});
+
+const sidebarVisible = signal<boolean>(true);
+const sidebarView = signal<"favorites" | "settings">("favorites");
 
 const Statistic = ({ label, value, prepend, append, className }: {
   label: string;
@@ -67,112 +87,130 @@ function App() {
 
   useEffect(() => {
     fetchResorts().then();
-    compareResortIds.value = favorites.value;
   }, [favorites.value]);
 
-  useEffect(() => {
-    if (sorting.value === "freshSnow") {
-      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
-        a.freshSnow - b.freshSnow
-      );
-    } else if (sorting.value === "mountainHeight") {
-      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
-        b.mountainHeight - a.mountainHeight
-      );
-    } else if (sorting.value === "tmax") {
-      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
-        b.dailyForecasts![0].tmax - a.dailyForecasts![0].tmax
-      );
-    } else if (sorting.value === "sun") {
-      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
-        a.dailyForecasts![0].sun - b.dailyForecasts![0].sun
-      );
-    }
-  }, [sorting.value, favorites.value]);
-
   return (
-    <div className="bp5-dark flex flex-col md:flex-row min-h-screen min-w-screen">
-      <div className="flex-none w-full md:max-w-xs md:w-1/4 p-4">
-        <H2>Einstellungen</H2>
-        <H3>Favoriten</H3>
-        <MultiSelect
-          items={[...resorts.value].filter((resort) =>
-            !favorites.value.includes(resort.id)
-          )}
-          selectedItems={favoriteResorts.value}
-          onItemSelect={(resort) => {
-            favorites.value = [...favorites.value, resort.id];
-          }}
-          tagRenderer={(resort) => resort.name}
-          itemRenderer={(resort, { handleClick }) => (
-            <MenuItem
-              key={resort.id}
-              onClick={handleClick}
-              text={resort.name}
-            />
-          )}
-          onRemove={(resort) => {
-            favorites.value = favorites.value.filter((id) => id !== resort.id);
-          }}
-        />
-        <H3 className="!mt-6">Vergleichen</H3>
-        {favoriteResorts.value.map((resort) => (
-          <Switch
-            key={resort.id}
-            checked={compareResortIds.value.includes(resort.id)}
-            onChange={() => {
-              compareResortIds.value =
-                compareResortIds.value.includes(resort.id)
-                  ? compareResortIds.value.filter((i) => i !== resort.id)
-                  : [...compareResortIds.value, resort.id];
+    <div className="bp5-dark flex flex-col md:flex-row">
+      {sidebarVisible.value && (
+        <div className="md:w-1/3 lg:w-1/4 px-4 py-2">
+          <div>
+            <Tabs
+              id="sidebar"
+              large
+              selectedTabId={sidebarView.value}
+              onChange={(e) => {
+                sidebarView.value = e as "favorites" | "settings";
+              }}
+            >
+              <Tab
+                id="favorites"
+                icon="star"
+                title="Favoriten"
+                panel={
+                  <div>
+                    <H3>Favoriten</H3>
+                    <Menu className="!mb-3">
+                      {favoriteResorts.value.map((resort) => (
+                        <MenuItem
+                          key={resort.id}
+                          text={resort.name}
+                          labelElement={<Icon icon="cross" />}
+                          onClick={() => {
+                            favorites.value = favorites.value.filter((id) =>
+                              id !== resort.id
+                            );
+                          }}
+                        />
+                      ))}
+                    </Menu>
+                    <Menu>
+                      {resorts.value.filter((resort) =>
+                        !favorites.value.includes(resort.id)
+                      ).sort(
+                        (a, b) => a.name.localeCompare(b.name),
+                      )
+                        .map((resort) => (
+                          <MenuItem
+                            key={resort.id}
+                            text={resort.name}
+                            labelElement={<Icon icon="plus" />}
+                            onClick={() => {
+                              favorites.value = [...favorites.value, resort.id];
+                            }}
+                          />
+                        ))}
+                    </Menu>
+                  </div>
+                }
+              />
+              <Tab
+                id="settings"
+                icon="cog"
+                title="Einstellungen"
+                panel={
+                  <div>
+                    <H3 className="!mt-6">Sortieren nach</H3>
+                    <SegmentedControl
+                      onValueChange={(e) => {
+                        sorting.value = e as
+                          | "freshSnow"
+                          | "mountainHeight"
+                          | "tmax"
+                          | "sun";
+                      }}
+                      options={[
+                        {
+                          label: "Neuschnee",
+                          value: "freshSnow",
+                        },
+                        {
+                          label: "Berg",
+                          value: "mountainHeight",
+                        },
+                        {
+                          label: "Temperatur",
+                          value: "tmax",
+                        },
+                        {
+                          label: "Sonne",
+                          value: "sun",
+                        },
+                      ]}
+                      defaultValue="freshSnow"
+                    />
+                    <H3 className="!mt-6">Andere Einstellungen</H3>
+                    <Switch
+                      checked={showForecasts.value}
+                      onChange={() => {
+                        showForecasts.value = !showForecasts.value;
+                      }}
+                      label="Vorhersage anzeigen"
+                    />
+                  </div>
+                }
+              />
+            </Tabs>
+          </div>
+        </div>
+      )}
+      <div className={`flex-1 p-4 ${sidebarVisible && "md:pl-0"} lg:max-h-screen lg:overflow-y-scroll`}>
+        <div className="flex justify-between">
+          <H1>Skigebiete</H1>
+          <div
+            className="flex cursor-pointer"
+            onClick={() => {
+              sidebarVisible.value = !sidebarVisible.value;
             }}
-            label={resort.name}
-          />
-        ))}
-        <H3 className="!mt-6">Sortieren nach</H3>
-        <SegmentedControl
-          onValueChange={(e) => {
-            sorting.value = e as
-              | "freshSnow"
-              | "mountainHeight"
-              | "tmax"
-              | "sun";
-          }}
-          options={[
-            {
-              label: "Neuschnee",
-              value: "freshSnow",
-            },
-            {
-              label: "Berg",
-              value: "mountainHeight",
-            },
-            {
-              label: "Temperatur",
-              value: "tmax",
-            },
-            {
-              label: "Sonne",
-              value: "sun",
-            },
-          ]}
-          defaultValue="freshSnow"
-        />
-        <H3 className="!mt-6">Andere Einstellungen</H3>
-        <Switch
-          checked={showDailyForecasts.value}
-          onChange={() => {
-            showDailyForecasts.value = !showDailyForecasts.value;
-          }}
-          label="Vorhersage anzeigen"
-        />
-      </div>
-      <div className="flex-1 p-4 max-h-screen overflow-y-scroll">
-        <H2 className="bp5-heading">Skigebiete</H2>
+          >
+            <Icon
+              size={22}
+              icon={sidebarVisible.value ? "menu-closed" : "menu-open"}
+            />
+            <span className="mt-[3px] ml-2">Einstellungen</span>
+          </div>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-2">
-          {favoriteResorts.value.filter(
-            (resort) => compareResortIds.value.includes(resort.id),
-          ).map((resort) => {
+          {favoriteResorts.value.map((resort) => {
             return (
               <Card
                 key={resort.id}
@@ -195,11 +233,12 @@ function App() {
                     onClick={() => {
                       window.location.href = `/resort/${resort.id}`;
                     }}
+                    disabled
                   >
                     Details
                   </Button>
                 </ButtonGroup>
-                <div className="p-4">
+                <div className="m-4">
                   <H3 className="bp5-heading !mb-0 truncate max-w-full">
                     {resort.name}
                   </H3>
@@ -246,11 +285,13 @@ function App() {
                   />
                 </div>
 
-                <ForecastTable
-                  resortId={resort.id}
-                  dailyForecasts={resort.dailyForecasts!}
-                  hourlyForecasts={resort.hourlyForecasts!}
-                />
+                {showForecasts.value && (
+                  <ForecastTable
+                    resortId={resort.id}
+                    dailyForecasts={resort.dailyForecasts!}
+                    hourlyForecasts={resort.hourlyForecasts!}
+                  />
+                )}
               </Card>
             );
           })}
