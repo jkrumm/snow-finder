@@ -3,6 +3,7 @@ import { useSignals } from "@preact/signals-react/runtime";
 import {
   Button,
   Card,
+  Divider,
   FormGroup,
   H3,
   Icon,
@@ -32,9 +33,10 @@ export function Favorites() {
 
   const [superSkiCardFilter, setSuperSkiCardFilter] = useState(false);
   const [snowCardTirolFilter, setSnowCardTirolFilter] = useState(false);
-  const [tirolFilter, setTirolFilter] = useState(false);
+  const [tirolFilter, setTirolFilter] = useState(true);
   const [salzburgerLandFilter, setSalzburgerLandFilter] = useState(false);
-  const [liftSliderFilter, setLiftSliderFilter] = useState(7);
+  const [vorarlbergFilter, setVorarlbergFilter] = useState(false);
+  const [liftSliderFilter, setLiftSliderFilter] = useState(10);
 
   const [filteredFavorites, setFilteredFavorites] = useState([]);
   const [filteredOutFavorites, setFilteredOutFavorites] = useState([]);
@@ -56,6 +58,9 @@ export function Favorites() {
     const matchesSalzburgerLand = (resort: ResortDto) =>
       !salzburgerLandFilter || resort.region === Regions.SALZBURG;
 
+    const matchesVorarlberg = (resort: ResortDto) =>
+      !vorarlbergFilter || resort.region === Regions.VORARLBERG;
+
     const matchesLiftCount = (resort: ResortDto) =>
       resort.liftsOpen >= liftSliderFilter;
 
@@ -69,6 +74,7 @@ export function Favorites() {
         matchesSnowCardTirol(resort) &&
         matchesTirol(resort) &&
         matchesSalzburgerLand(resort) &&
+        matchesVorarlberg(resort) &&
         matchesLiftCount(resort),
     ));
 
@@ -80,6 +86,7 @@ export function Favorites() {
           matchesSnowCardTirol(resort) &&
           matchesTirol(resort) &&
           matchesSalzburgerLand(resort) &&
+          matchesVorarlberg(resort) &&
           matchesLiftCount(resort)
         ),
     ));
@@ -92,6 +99,7 @@ export function Favorites() {
         matchesSnowCardTirol(resort) &&
         matchesTirol(resort) &&
         matchesSalzburgerLand(resort) &&
+        matchesVorarlberg(resort) &&
         matchesLiftCount(resort),
     ));
   }, [
@@ -110,13 +118,12 @@ export function Favorites() {
 
   return (
     <div className="@container w-[730px] max-w-screen p-4">
-      <div className="mb-4 @lg:grid grid-cols-3 gap-4">
+      <div className="mb-2 @lg:grid grid-cols-3 gap-4">
         <Card compact className="!mb-3 @lg:!mb-0">
           <H3>Saisonkarten filtern</H3>
           <FormGroup className="!mb-0 !mt-3">
             <Switch
               checked={superSkiCardFilter}
-              large
               onChange={() => {
                 setSuperSkiCardFilter(!superSkiCardFilter);
               }}
@@ -124,7 +131,6 @@ export function Favorites() {
             />
             <Switch
               checked={snowCardTirolFilter}
-              large
               onChange={() => {
                 setSnowCardTirolFilter(!snowCardTirolFilter);
               }}
@@ -137,25 +143,42 @@ export function Favorites() {
           <FormGroup className="!mb-0 !mt-3">
             <Switch
               checked={tirolFilter}
-              large
               onChange={() => {
                 setTirolFilter(!tirolFilter);
-                if (salzburgerLandFilter && !tirolFilter) {
+                if (
+                  (salzburgerLandFilter || vorarlbergFilter) && !tirolFilter
+                ) {
                   setSalzburgerLandFilter(false);
+                  setVorarlbergFilter(false);
                 }
               }}
               label="Tirol"
             />
             <Switch
               checked={salzburgerLandFilter}
-              large
               onChange={() => {
                 setSalzburgerLandFilter(!salzburgerLandFilter);
-                if (!salzburgerLandFilter && tirolFilter) {
+                if (
+                  (tirolFilter || vorarlbergFilter) && !salzburgerLandFilter
+                ) {
                   setTirolFilter(false);
+                  setVorarlbergFilter(false);
                 }
               }}
               label="Salzburger Land"
+            />
+            <Switch
+              checked={vorarlbergFilter}
+              onChange={() => {
+                setVorarlbergFilter(!vorarlbergFilter);
+                if (
+                  (salzburgerLandFilter || tirolFilter) && !vorarlbergFilter
+                ) {
+                  setSalzburgerLandFilter(false);
+                  setTirolFilter(false);
+                }
+              }}
+              label="Vorarlberg"
             />
           </FormGroup>
         </Card>
@@ -180,7 +203,6 @@ export function Favorites() {
         placeholder="Suche ..."
         value={search}
         fill
-        large
         leftIcon="search"
         rightElement={
           <Button minimal>
@@ -193,7 +215,8 @@ export function Favorites() {
         }
         onChange={(e) => setSearch(e.target.value)}
       />
-      <div className="@lg:grid grid-cols-2 gap-4 items-start mt-6">
+      <Divider />
+      <div className="@lg:grid grid-cols-2 gap-4 items-start mt-4">
         <div className="mb-3">
           {filteredOutFavorites.length > 0 && (
             <div className="mb-5">

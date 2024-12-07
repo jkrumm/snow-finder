@@ -84,6 +84,9 @@ export async function fetchResorts(): Promise<FetchResort[]> {
   resorts.push(...((await fetchRegion(Regions.SALZBURG)).filter(
     (resort) => !resorts.some((r) => r.id === resort.id),
   )));
+  resorts.push(...((await fetchRegion(Regions.VORARLBERG)).filter(
+    (resort) => !resorts.some((r) => r.id === resort.id)
+  )));
 
   resorts.sort((a, b) => {
     if (a.freshSnow === b.freshSnow) {

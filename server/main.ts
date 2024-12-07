@@ -48,8 +48,8 @@ router.get("/api/pqi/:id", async (context) => {
     return;
   }
 
-  const costPrevention = true;
-  if (costPrevention) {
+
+  if (Deno.env.get("DATA_SAVING")) {
     context.response.body = [];
     return;
   }

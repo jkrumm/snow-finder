@@ -1,8 +1,26 @@
 import { PowderQualityIndex } from "../../server/util/ai-powder-quality.helper.ts";
 
+// export const RegionsAustria = {
+//     TIROL: "tirol",
+//     SALZBURG: "salzburg",
+//     VORARLBERG: "vorarlberg",
+//     KAERNTEN: "kaernten",
+//     STEIERMARK: "steiermark",
+// };
+
+// export const RegionsItaly = {
+//     TRENTINO: "trentino",
+//     SUEDTIROL: "suedtirol",
+//     LOMBARDEI: "lombardei",
+//     PIEMONT: "piemont",
+//     AOSTATAL: "aostatal",
+//     VENETIEN: "venetien",
+// };
+
 export const Regions = {
   TIROL: "tirol",
   SALZBURG: "salzburg",
+  VORARLBERG: "vorarlberg",
 } as const;
 
 export interface ForecastDto {
