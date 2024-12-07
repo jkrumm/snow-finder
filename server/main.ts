@@ -87,7 +87,6 @@ const updateList = async () => {
   });
 };
 
-
 const forecastData: {
   date: string;
   img: string | null;
@@ -101,45 +100,113 @@ const forecastData: {
 
 const updateForecast = async (skiAreaUrl: string) => {
   const html = await fetchPage(
-      `https://www.bergfex.at${skiAreaUrl}/wetter/berg/`,
+    `https://www.bergfex.at${skiAreaUrl}/wetter/berg/`,
   );
   const $ = cheerio.load(html);
 
   $(".day.clickable.selectable.fields, .day.clickable.trend.fields").each(
-  // deno-lint-ignore no-unused-vars
-      (index, element) => {
-        const date = $(element).find(".date a").text().trim();
-        const img =
-            ($(element).find(".icon img").attr("src") || "").split("/").pop() ||
-            null;
-        const tmax = convertTemperatureToNumber(
-            $(element).find(".tmax").text().trim(),
-        );
-        const tmin = convertTemperatureToNumber(
-            $(element).find(".tmin").text().trim(),
-        );
-        const freshSnow = convertCmToNumber(
-            $(element).find(".group.nschnee").text().trim(),
-        );
-        const rainRisc = convertPercentageToNumber(
-            $(element).find(".rrp").text().trim(),
-        );
-        const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
-        const wind = $(element).find(".ff").text().trim();
+    // deno-lint-ignore no-unused-vars
+    (index, element) => {
+      const date = $(element).find(".date a").text().trim();
+      const img =
+        ($(element).find(".icon img").attr("src") || "").split("/").pop() ||
+        null;
+      const tmax = convertTemperatureToNumber(
+        $(element).find(".tmax").text().trim(),
+      );
+      const tmin = convertTemperatureToNumber(
+        $(element).find(".tmin").text().trim(),
+      );
+      const freshSnow = convertCmToNumber(
+        $(element).find(".group.nschnee").text().trim(),
+      );
+      const rainRisc = convertPercentageToNumber(
+        $(element).find(".rrp").text().trim(),
+      );
+      const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
+      const wind = $(element).find(".ff").text().trim();
 
-        forecastData.push({
-          date,
-          img, // vcdn.bergfex.at/images/wetter/bergfex-shaded/b3s2.png
-          tmax,
-          tmin,
-          freshSnow,
-          rainRisc,
-          sun,
-          wind,
-        });
-      },
+      forecastData.push({
+        date,
+        img, // vcdn.bergfex.at/images/wetter/bergfex-shaded/b3s2.png
+        tmax,
+        tmin,
+        freshSnow,
+        rainRisc,
+        sun,
+        wind,
+      });
+    },
   );
-}
+};
+
+const forecastHourlyData: Record<number, {
+  date: string;
+  img: string | null;
+  tmax: number;
+  tmin: number;
+  freshSnow: number;
+  rainRisc: number;
+  sun: number;
+  wind: string;
+}[]> = {};
+
+const extract3HourlyForecast = async (skiAreaUrl: string, index: number) => {
+  const html = await fetchPage(
+    `https://www.bergfex.at/${skiAreaUrl}/wetter/prognose/#day${index}`,
+  );
+  const $ = cheerio.load(html);
+
+  forecastHourlyData[index] = [];
+
+  const internalForecastData: {
+    date: string;
+    img: string | null;
+    tmax: number;
+    tmin: number;
+    freshSnow: number;
+    rainRisc: number;
+    sun: number;
+    wind: string;
+  }[] = [];
+
+  $(".interval.fields").each((index, element) => {
+    const date = $(element).find(".time.offset").text().trim();
+    const img =
+      ($(element).find(".icon img").attr("src") || "").split("/").pop() || null;
+    const tmax = convertTemperatureToNumber(
+      $(element).find(".group.offset .tmax").first().text().trim(),
+    );
+    const tmin = convertTemperatureToNumber(
+      $(element).find(".group.offset .tmax").last().text().trim(),
+    );
+    const freshSnow = convertCmToNumber(
+      $(element).find(".group .nschnee").first().text().trim(),
+    );
+    const rainRisc = convertPercentageToNumber(
+      $(element).find(".rrp").text().trim(),
+    );
+    const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
+    const wind = $(element).find(".group .ff").first().text().trim();
+
+    if (index > 7) {
+      return;
+    }
+
+    internalForecastData.push({
+      date,
+      img,
+      tmax,
+      tmin,
+      freshSnow,
+      rainRisc,
+      sun,
+      wind,
+    });
+  });
+
+  forecastHourlyData[index] = internalForecastData;
+};
 
 router.get("/list", async (context) => {
   await updateList();
@@ -148,7 +215,11 @@ router.get("/list", async (context) => {
 
   await updateForecast(skiArea.url!);
 
-  context.response.body = forecastData;
+  for (let i = 0; i <= 5; i++) {
+    await extract3HourlyForecast(skiArea.url!, i);
+  }
+
+  context.response.body = forecastHourlyData;
 });
 
 app.use(router.routes());
