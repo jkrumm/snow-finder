@@ -44,8 +44,8 @@ export const fetchResorts = async (): Promise<Resort[]> => {
             valleyHeight,
             mountainHeight,
             freshSnow,
-            liftsOpen: Number(lifts.split("/")[0]),
-            liftsTotal: Number(lifts.split("/")[1]),
+            liftsOpen: Number(lifts.split("/")[0] || 0),
+            liftsTotal: Number(lifts.split("/")[1] || 0),
             date,
         }));
     });

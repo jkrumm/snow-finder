@@ -173,7 +173,7 @@ export class Weather {
     }
 
     const resorts = await fetchResorts();
-    resorts.forEach((resort) => {
+    resorts.forEach((resort: Resort) => {
       const existingResort = this.resorts.find((r) => r.id === resort.id);
       if (existingResort) {
         existingResort.update(resort);
@@ -184,7 +184,7 @@ export class Weather {
 
     // NOTE: Remove resorts that are no longer in the list
     this.resorts = this.resorts.filter((resort) =>
-      resorts.find((r) => r.id === resort.id)
+      resorts.find((r: { id: string }) => r.id === resort.id)
     );
 
     this.lastUpdated = DateTime.now();

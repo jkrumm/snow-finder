@@ -21,6 +21,7 @@
     "jsr:@std/testing@*": "1.0.5",
     "npm:@blueprintjs/core@^5.16.0": "5.16.0_@types+react@18.3.12_react@18.3.1_react-dom@18.3.1__react@18.3.1_@popperjs+core@2.11.8",
     "npm:@blueprintjs/icons@^5.15.0": "5.15.0_@types+react@18.3.12_react@18.3.1_react-dom@18.3.1__react@18.3.1",
+    "npm:@blueprintjs/select@^5.3.5": "5.3.5_@types+react@18.3.12_react@18.3.1_react-dom@18.3.1__react@18.3.1",
     "npm:@deno/vite-plugin@1": "1.0.0_vite@5.4.11__@types+node@22.5.4_@types+node@22.5.4",
     "npm:@preact/signals-react-transform@0.4": "0.4.0_@babel+core@7.26.0_react@18.3.1",
     "npm:@preact/signals-react@^2.2.0": "2.2.0_react@18.3.1",
@@ -294,6 +295,18 @@
       "dependencies": [
         "@types/react",
         "change-case",
+        "classnames",
+        "react",
+        "react-dom",
+        "tslib"
+      ]
+    },
+    "@blueprintjs/select@5.3.5_@types+react@18.3.12_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-oULOvtnFHiaXPWahyQg0XFc2YhZrY1FPOuHq3fDKyb1MukYEYshy+L4gHUA5gnVBxv6543Oi7m7ErxGE3bcJmQ==",
+      "dependencies": [
+        "@blueprintjs/core",
+        "@blueprintjs/icons",
+        "@types/react",
         "classnames",
         "react",
         "react-dom",
@@ -1240,6 +1253,7 @@
       "jsr:@std/assert@1",
       "npm:@blueprintjs/core@^5.16.0",
       "npm:@blueprintjs/icons@^5.15.0",
+      "npm:@blueprintjs/select@^5.3.5",
       "npm:@deno/vite-plugin@1",
       "npm:@preact/signals-react-transform@0.4",
       "npm:@preact/signals-react@^2.2.0",
