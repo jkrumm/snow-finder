@@ -1,4 +1,9 @@
-import { PowderQualityIndex } from "../../server/util/powder-quality.helper.ts";
+import { PowderQualityIndex } from "../../server/util/ai-powder-quality.helper.ts";
+
+export const Regions = {
+  TIROL: "tirol",
+  SALZBURG: "salzburg",
+} as const;
 
 export interface ForecastDto {
   date: string;
@@ -21,6 +26,7 @@ export interface ForecastDto {
 export interface ResortDto {
   id: string;
   name: string;
+  region: (typeof Regions)[keyof typeof Regions];
   long: number;
   lat: number;
   resortValleyHeight: number;

@@ -42,7 +42,7 @@ export async function generatePowderQualityIndex(
     
     The description should be german and understandable for the freeskiers using my app. Explain the powder quality index with the factors that influenced it in 2-3 sentences keep it simple and understandable and focus on the most important factors.
     Include the day in the description like: "Heute am 12.12. ist der Schnee mit einer Qualität von 10/10 optimal. Es hat in den letzten Tagen viel geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach."
-    The first entry in forecasts is the current day (Heute), the 2nd entry is the next day (Morgen) and from then on use the weekdays name in german like "Dienstag" for the day after tomorrow.
+    The first entry in forecasts is the current day (Heute), the 2nd entry is the next day (Morgen) and from then on use the weekdays name in german like "Dienstag" (the weekday is given in the forecast) for the day after tomorrow.
     Be careful that the powder quality index in the description is always the same as the one in the JSON object.
   `;
 
@@ -54,12 +54,14 @@ export async function generatePowderQualityIndex(
     Forecasts:
     ${
     resort.dailyForecasts.map((f) => `
-      Date: ${f.date}, Max temperature: ${f.tmax}°C, Min temperature: ${f.tmin}°C, Snowline: ${f.snowline}m, Fresh Snow: ${f.freshSnow}cm, Precipitation Risk: ${
+      Date: ${f.date}, Weekday: ${DateTime.fromISO(f.date).toFormat("cccc")}, Max temperature: ${f.tmax}°C, Min temperature: ${f.tmin}°C, Snowline: ${f.snowline}m, Fresh Snow: ${f.freshSnow}cm, Precipitation Risk: ${
       f.rainRisc * 100
-    }% Precipitation Amount: ${f.rainAmount}l, Sun: ${f.sun}h, Wind Direction: ${f.windDirection} Wind Bft: ${f.windBft}
+    }% Precipitation Amount: ${f.rainAmount}l, Sun: ${f.sun}h, Wind Direction: ${f.windDirection}, Wind Bft: ${f.windBft}
     `).join("")
   }
   `;
+
+  console.log(userPrompt);
 
   const completion = await client.chat.completions.create({
     model: "gpt-4o-mini",

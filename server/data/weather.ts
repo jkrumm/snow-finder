@@ -1,7 +1,7 @@
 import { DateTime } from "luxon";
 import { isElapsed } from "../util/date.helper.ts";
-import { ResortDto } from "../../shared/dtos/weather.dto.ts";
-import { getRecentResorts } from "../util/fetch.helper.ts";
+import { Regions, ResortDto } from "../../shared/dtos/weather.dto.ts";
+import { getRecentResorts } from "../util/fetch-server.helper.ts";
 
 export class Forecast {
   date: DateTime;
@@ -51,6 +51,7 @@ export class Forecast {
 export class Resort {
   id: string;
   name: string;
+  region: (typeof Regions)[keyof typeof Regions];
   long: number;
   lat: number;
   resortValleyHeight: number;
@@ -69,6 +70,7 @@ export class Resort {
     data: {
       id: string;
       name: string;
+      region: (typeof Regions)[keyof typeof Regions];
       long: number;
       lat: number;
       resortValleyHeight: number;
@@ -85,6 +87,7 @@ export class Resort {
   ) {
     this.id = data.id;
     this.name = data.name;
+    this.region = data.region;
     this.long = data.long;
     this.lat = data.lat;
     this.resortValleyHeight = data.resortValleyHeight;
@@ -104,6 +107,7 @@ export class Resort {
     return {
       id: this.id,
       name: this.name,
+      region: this.region,
       long: this.long,
       lat: this.lat,
       resortValleyHeight: this.resortValleyHeight,

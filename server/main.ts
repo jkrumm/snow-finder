@@ -6,7 +6,7 @@ import { Weather } from "./data/weather.ts";
 import {
   generatePowderQualityIndex,
   PowderQualityIndex,
-} from "./util/powder-quality.helper.ts";
+} from "./util/ai-powder-quality.helper.ts";
 import { DateTime } from "luxon";
 import { isElapsed } from "./util/date.helper.ts";
 
@@ -48,7 +48,7 @@ router.get("/api/pqi/:id", async (context) => {
     return;
   }
 
-  const costPrevention = false;
+  const costPrevention = true;
   if (costPrevention) {
     context.response.body = [];
     return;

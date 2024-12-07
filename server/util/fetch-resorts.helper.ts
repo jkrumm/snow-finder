@@ -1,10 +1,12 @@
 import { convertCmOrMToNumber, fetchPage } from "./parser.helper.ts";
 import * as cheerio from "cheerio";
 import { DateTime } from "luxon";
+import {Regions} from "../../shared/dtos/weather.dto.ts";
 
 export interface FetchResort {
   id: string;
   name: string;
+  region: (typeof Regions)[keyof typeof Regions];
   valleyHeight: number;
   mountainHeight: number;
   freshSnow: number;
@@ -13,9 +15,11 @@ export interface FetchResort {
   date: DateTime;
 }
 
-export async function fetchResorts(): Promise<FetchResort[]> {
+async function fetchRegion(
+  region: (typeof Regions)[keyof typeof Regions],
+): Promise<FetchResort[]> {
   const html: string = await fetchPage(
-    "https://www.bergfex.at/tirol/schneewerte/",
+    `https://www.bergfex.at/${region}/schneewerte/`,
   );
   const $ = cheerio.load(html);
 
@@ -59,6 +63,7 @@ export async function fetchResorts(): Promise<FetchResort[]> {
       {
         id,
         name,
+        region,
         valleyHeight,
         mountainHeight,
         freshSnow,
@@ -68,6 +73,17 @@ export async function fetchResorts(): Promise<FetchResort[]> {
       },
     );
   });
+
+  return resorts;
+}
+
+export async function fetchResorts(): Promise<FetchResort[]> {
+  const resorts: FetchResort[] = [];
+
+  resorts.push(...(await fetchRegion(Regions.TIROL)));
+  resorts.push(...((await fetchRegion(Regions.SALZBURG)).filter(
+    (resort) => !resorts.some((r) => r.id === resort.id),
+  )));
 
   resorts.sort((a, b) => {
     if (a.freshSnow === b.freshSnow) {

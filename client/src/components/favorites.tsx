@@ -16,6 +16,7 @@ import {
   snowCardTirolResortIds,
   superSkiCardResortIds,
 } from "../constants/resorts.ts";
+import {Regions} from "../../../shared/dtos/weather.dto.ts";
 
 export function Favorites() {
   useSignals();
@@ -57,18 +58,22 @@ export function Favorites() {
             <Switch
               checked={tirolFilter}
               large
-              disabled
               onChange={() => {
                 setTirolFilter(!tirolFilter);
+                if (salzburgerLandFilter && !tirolFilter) {
+                  setSalzburgerLandFilter(false);
+                }
               }}
               label="Tirol"
             />
             <Switch
               checked={salzburgerLandFilter}
               large
-              disabled
               onChange={() => {
                 setSalzburgerLandFilter(!salzburgerLandFilter);
+                if (!salzburgerLandFilter && tirolFilter) {
+                  setTirolFilter(false);
+                }
               }}
               label="Salzburger Land"
             />
@@ -103,7 +108,9 @@ export function Favorites() {
                 (!superSkiCardFilter ||
                   superSkiCardResortIds.includes(resort.id)) &&
                 (!snowCardTirolFilter ||
-                  superSkiCardResortIds.includes(resort.id)),
+                  superSkiCardResortIds.includes(resort.id)) &&
+                (!tirolFilter || resort.region === Regions.TIROL) &&
+                (!salzburgerLandFilter || resort.region === Regions.SALZBURG)
             ).map((resort) => (
               <MenuItem
                 key={resort.id}
@@ -118,7 +125,7 @@ export function Favorites() {
             ))}
           </Menu>
         </div>
-        <div>
+        <div className="mb-3">
           <H3>Alle Resorts</H3>
           <Menu>
             {resorts.value.filter((resort) =>
@@ -128,7 +135,9 @@ export function Favorites() {
               (!superSkiCardFilter ||
                 superSkiCardResortIds.includes(resort.id)) &&
               (!snowCardTirolFilter ||
-                snowCardTirolResortIds.includes(resort.id))
+                snowCardTirolResortIds.includes(resort.id)) &&
+                (!tirolFilter || resort.region === Regions.TIROL) &&
+                (!salzburgerLandFilter || resort.region === Regions.SALZBURG)
             )
               .sort(
                 (a, b) => a.name.localeCompare(b.name),
