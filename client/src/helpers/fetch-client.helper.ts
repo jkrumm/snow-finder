@@ -46,5 +46,6 @@ export async function fetchResorts() {
   if (resorts.value.length > 0) return;
   const response = await fetch("http://localhost:8000/api/resorts");
   resorts.value = await response.json();
+  console.log("resorts fetched", resorts.value.map((resort) => ({name: resort.name, id: resort.id})) );
   await fetchPqiData();
 }
