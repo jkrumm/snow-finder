@@ -106,6 +106,22 @@ span.muted {
   background-color: rgba(172, 47, 51, 0.9);
 }
 
+.bg-green-low {
+  background-color: rgba(35, 133, 81, 0.2);
+}
+
+.bg-green-medium {
+  background-color: rgba(35, 133, 81, 0.5);
+}
+
+.bg-green-high {
+  background-color: rgba(35, 133, 81, 0.7);
+}
+
+.bg-green-extreme {
+  background-color: rgba(35, 133, 81, 0.9);
+}
+
 // FIXES
 .bp5-callout h5 {
   overflow: hidden;

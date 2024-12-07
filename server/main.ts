@@ -22,7 +22,8 @@ app.use(
 export const weather = await Weather.init();
 
 const pqiMap = new Map<string, {
-  date: DateTime;
+  id: string;
+  date: string;
   powderQualityIndex: PowderQualityIndex[];
 }>();
 
@@ -39,8 +40,11 @@ router.get("/api/pqi/:id", async (context) => {
 
   const existingPqi = pqiMap.get(id);
 
-  if (existingPqi && !isElapsed(existingPqi.date, 60)) {
-    context.response.body = existingPqi.powderQualityIndex;
+  if (
+    existingPqi &&
+    !isElapsed(DateTime.fromISO(existingPqi.date).startOf("day"), 60)
+  ) {
+    context.response.body = existingPqi;
     return;
   }
 
@@ -55,11 +59,16 @@ router.get("/api/pqi/:id", async (context) => {
   const pqi = await generatePowderQualityIndex(resort);
 
   pqiMap.set(id, {
-    date: DateTime.now(),
+    id,
+    date: DateTime.now().toISODate(),
     powderQualityIndex: pqi,
   });
 
-  context.response.body = pqi;
+  context.response.body = {
+    id,
+    date: DateTime.now().toISODate(),
+    powderQualityIndex: pqi,
+  };
 });
 
 app.use(router.routes());

@@ -135,5 +135,12 @@ export const getStatuses = (resort: ResortDto): Status[] => {
     });
   }
 
+  if (statuses.length === 0) {
+    statuses.push({
+      intend: "success",
+      title: "Alles Gut",
+    });
+  }
+
   return statuses;
 };

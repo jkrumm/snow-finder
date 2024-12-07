@@ -39,10 +39,7 @@ function App() {
     <div className="bp5-dark" id="content">
       <Navigation />
       <div id="wrapper">
-        <div>
-          {path.value !== Paths.MAP && <H1 className="!m-0 !mx-4 !mt-3">{getPathTitle(path.value)}</H1>}
           <Component />
-        </div>
       </div>
     </div>
   );

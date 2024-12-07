@@ -12,6 +12,8 @@ import {
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { ForecastTable } from "./forecast-table.tsx";
 import { getStatuses, Status } from "../helpers/status.helper.ts";
+import { fetchResorts } from "../helpers/fetch-client.helper.ts";
+import { Pqi } from "./pqi.tsx";
 
 export const resorts = signal<ResortDto[]>([]);
 
@@ -67,12 +69,6 @@ export const favoriteResorts = computed<ResortDto[]>(() => {
 export function Weather() {
   useSignals();
 
-  const fetchResorts = async () => {
-    if (resorts.value.length > 0) return;
-    const response = await fetch("http://localhost:8000/api/resorts");
-    resorts.value = await response.json();
-  };
-
   useEffect(() => {
     fetchResorts().then();
   }, [favorites.value]);
@@ -110,7 +106,7 @@ export function Weather() {
               </ButtonGroup>
               <div className="flex justify-between">
                 <H3
-                  className={`bp5-heading !m-3 !mb-1 flex-1 truncate`}
+                  className={`bp5-heading !m-3 !mt-3 !mb-1 flex-1 truncate`}
                 >
                   {resort.name}
                 </H3>
@@ -125,19 +121,8 @@ export function Weather() {
                   </span>
                 </div>
               </div>
-              <div className="flex">
-                {statuses.map((status: Status) => (
-                  <Callout
-                    key={status.title}
-                    icon={false}
-                    className={`m-2 truncate text-center`}
-                    intent={status.intend}
-                    title={status.title}
-                    compact
-                  />
-                ))}
-              </div>
-              <div className="grid grid-cols-4 grid-rows-1 gap-x-2 gap-y-5 w-full muted-bg mt-2">
+
+              <div className="grid grid-cols-4 grid-rows-1 gap-x-2 gap-y-5 w-full muted-bg mt-2 pt-2">
                 <Statistic
                   label="Tal"
                   value={resort.valleyHeight}
@@ -157,26 +142,21 @@ export function Weather() {
                   label="Lifte"
                   value={`${resort.liftsOpen}/${resort.liftsTotal}`}
                 />
-                {/*<Statistic*/}
-                {/*  label="Temperatur"*/}
-                {/*  value={`${resort.dailyForecasts![0].tmax}° / ${*/}
-                {/*    resort.dailyForecasts![0].tmin*/}
-                {/*  }°`}*/}
-                {/*/>*/}
-                {/*<Statistic*/}
-                {/*  label="Sonne"*/}
-                {/*  value={resort.dailyForecasts![0].sun}*/}
-                {/*  append=" h"*/}
-                {/*/>*/}
-                {/*<Statistic*/}
-                {/*  label="Wind"*/}
-                {/*  value={resort.dailyForecasts![0].wind}*/}
-                {/*/>*/}
-                {/*<Statistic*/}
-                {/*  label="Regenrisiko"*/}
-                {/*  value={(resort.dailyForecasts![0].rainRisc) * 100}*/}
-                {/*  append=" %"*/}
-                {/*/>*/}
+              </div>
+
+              <Pqi resort={resort} index={new Date().getHours() >= 12 ? 1 : 0} />
+
+              <div className="flex h-[56px]">
+                {statuses.map((status: Status) => (
+                  <Callout
+                    key={status.title}
+                    icon={false}
+                    className={`m-2 truncate text-center`}
+                    intent={status.intend}
+                    title={status.title}
+                    compact
+                  />
+                ))}
               </div>
 
               {showForecasts.value && (

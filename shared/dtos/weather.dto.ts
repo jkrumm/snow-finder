@@ -1,3 +1,5 @@
+import { PowderQualityIndex } from "../../server/util/powder-quality.helper.ts";
+
 export interface ForecastDto {
   date: string;
   img: string;
@@ -11,6 +13,9 @@ export interface ForecastDto {
   windBft: number;
   windDirection: string;
   windSpeed: number;
+  // Powder Quality Index
+  pqi?: number;
+  pqiDescription?: string;
 }
 
 export interface ResortDto {
@@ -27,4 +32,10 @@ export interface ResortDto {
   liftsTotal: number;
   dailyForecasts: ForecastDto[];
   hourlyForecasts: ForecastDto[];
+}
+
+export interface PqiDto {
+  id: string;
+  date: string;
+  powderQualityIndex: PowderQualityIndex[];
 }

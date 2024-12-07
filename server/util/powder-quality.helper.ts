@@ -24,7 +24,7 @@ export async function generatePowderQualityIndex(
     Rule: Without new fresh snow the snow quality can never increase but only degrade over the days.
     Rule: The current conditions resulting through the days before are usually more important than the current day.
     
-    Very important: Never degrade the first day too much as it doesnt have previous days but consider the current fresh snow and especially the current snow height or the resort and the weather conditions. The first entry in forecasts is the current day.
+    Very important: Dont degrade the first day too much as it doesnt have previous days but consider the current fresh snow and the current snow height of the resort and the weather conditions. The first entry in forecasts is the current day.
     Highest impact: Consider factors over the days of the forecast like current and cumulative fresh snow, snow fall line, temperature variations, sun exposure, wind conditions. The days before (snow fall, temperature, ...) the current day are very important for the snow quality of each day.
     High impact: Given that after or during the recent snowfall the snow quality is usually best, the snow quality of the current day is usually better than the snow quality of the following days if there is no fresh snow. So without fresh snow the snow quality is degrading over the days while the next days after fresh snow are usually optimal for powder skiing.
     High impact: Roughly Accumulated snow heights on the mountain of 70cm or more are ideal for freeskiing. While snow heights above 50cm is sufficient for freeskiing. The more accumulated snow the better. Snow heights also degrade over the days without fresh snow.
@@ -41,7 +41,9 @@ export async function generatePowderQualityIndex(
     Respond with a JSON object containing the date and a powder quality index from 0 to 10 for each forecast and a description. 
     
     The description should be german and understandable for the freeskiers using my app. Explain the powder quality index with the factors that influenced it in 2-3 sentences keep it simple and understandable and focus on the most important factors.
-    Include the day in the description like: "Morgen am 12.12 ist der Schnee mit einer Pulverqualität von 8/10 sehr gut. Es hat in den letzten Tagen viel geschneit und die Temperaturen sind ideal für Pulverschnee."
+    Include the day in the description like: "Heute am 12.12. ist der Schnee mit einer Qualität von 10/10 optimal. Es hat in den letzten Tagen viel geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach."
+    The first entry in forecasts is the current day (Heute), the 2nd entry is the next day (Morgen) and from then on use the weekdays name in german like "Dienstag" for the day after tomorrow.
+    Be careful that the powder quality index in the description is always the same as the one in the JSON object.
   `;
 
   const userPrompt = `

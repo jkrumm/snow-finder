@@ -3,6 +3,7 @@ import { Forecast } from "../../../server/data/weather.ts";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 
 import { DateTime } from "luxon";
+import { ForecastDto } from "../../../shared/dtos/weather.dto.ts";
 
 function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
@@ -87,8 +88,8 @@ export const ForecastTable = (
           </Button>
         </ButtonGroup>
       )}
-      <div className="flex flex-col mt-4 mb-[1px] mr-[1px]">
-        <div className="grid grid-cols-[1fr_70px_70px_60px_50px] border-b pb-2 border-[#404854] text-center font-bold">
+      <div className="flex flex-col mt-1 mb-[1px] mr-[1px]">
+        <div className="grid grid-cols-[1fr_70px_70px_60px_50px_50px] border-b pb-2 border-[#404854] text-center font-bold">
           <div className="text-left pl-2">
             {selectedView === "daily"
               ? "9 Tage Vorhersage"
@@ -98,8 +99,9 @@ export const ForecastTable = (
           <div>Wind</div>
           <div>Schnee</div>
           <div>Sonne</div>
+          <div>PQI</div>
         </div>
-        {forecasts.map((forecast: Forecast, index: number) => {
+        {forecasts.map((forecast: ForecastDto, index: number) => {
           const dateObj = new Date(forecast.date);
           const dateLabel = selectedView === "daily"
             ? formatDate(dateObj.getTime(), today.getTime())
@@ -159,10 +161,24 @@ export const ForecastTable = (
             windDescription = "> 39km/h";
           }
 
+          let pqiBgColor = `bg-[#252a31]`;
+          if (forecast.pqi && forecast.pqi >= 3) {
+            pqiBgColor = `bg-green-low`;
+          }
+          if (forecast.pqi && forecast.pqi >= 5) {
+            pqiBgColor = `bg-green-medium`;
+          }
+          if (forecast.pqi && forecast.pqi >= 7) {
+            pqiBgColor = `bg-green-high`;
+          }
+          if (forecast.pqi && forecast.pqi >= 9) {
+            pqiBgColor = `bg-green-extreme`;
+          }
+
           return (
             <div
               key={forecast.date}
-              className={`grid grid-cols-[1fr_40px_70px_70px_60px_50px] ${
+              className={`grid grid-cols-[1fr_40px_70px_70px_60px_50px_50px] ${
                 index + 1 !== forecasts.length && "border-b"
               } border-[#404854] ${index < 6 && "cursor-pointer"}`}
               onClick={() => {
@@ -170,7 +186,7 @@ export const ForecastTable = (
                 setSelectedView(index);
               }}
             >
-              <div className="flex flex-col justify-center py-2 pl-2">
+              <div className="flex flex-col h-[56px] justify-center py-2 pl-2">
                 <span className="truncate">{dateLabel}</span>
                 <span className="text-sm muted">
                   {new Date(forecast.date).toLocaleDateString("de-DE", {
@@ -179,14 +195,14 @@ export const ForecastTable = (
                   })}
                 </span>
               </div>
-              <div className="flex justify-center items-center py-2">
+              <div className="flex justify-center h-[56px] items-center py-2">
                 <img
                   src={`https://vcdn.bergfex.at/images/wetter/bergfex-shaded/${forecast.img}`}
                   alt={`weather-img-${forecast.date}`}
                   width="40"
                 />
               </div>
-              <div className="flex justify-center flex-col items-center py-2">
+              <div className="flex justify-center h-[56px] flex-col items-center py-2">
                 <span>{`${forecast.tmax}°/${forecast.tmin}°`}</span>
                 {!!forecast.snowline &&
                   (!!forecast.freshSnow || !!forecast.rainAmount) &&
@@ -198,11 +214,10 @@ export const ForecastTable = (
               </div>
               <Tooltip
                 content={windDescription}
-                position="top"
                 className={windBgColor}
               >
                 <div
-                  className={`flex justify-center flex-col items-center py-2 bg-opacity-20`}
+                  className={`flex justify-center h-[56px] flex-col items-center py-2`}
                 >
                   <span>
                     {selectedView === "daily"
@@ -215,26 +230,35 @@ export const ForecastTable = (
                 </div>
               </Tooltip>
               <div
-                className={`flex justify-center flex-col items-center py-2 bg-opacity-20 ${snowColor}`}
+                className={`flex justify-center h-[56px] flex-col items-center py-2 ${snowColor}`}
               >
                 {!!forecast.freshSnow && !!forecast.rainAmount && (
-                      <>
-                        <span>{`${forecast.freshSnow ?? 0}cm`}</span>
-                        <span className="text-sm muted">
-                          {`${(forecast.rainRisc * 100).toFixed(0)}%${
-                            forecast.rainAmount
-                              ? ` ${forecast.rainAmount}l`
-                              : ""
-                          }`}
-                        </span>
-                      </>
-                    )}
+                  <>
+                    <span>{`${forecast.freshSnow ?? 0}cm`}</span>
+                    <span className="text-sm muted">
+                      {`${(forecast.rainRisc * 100).toFixed(0)}%${
+                        forecast.rainAmount ? ` ${forecast.rainAmount}l` : ""
+                      }`}
+                    </span>
+                  </>
+                )}
               </div>
               <div
-                className={`flex justify-center items-center py-2  bg-opacity-20 ${sunBgColor}`}
+                className={`flex justify-center h-[56px] items-center py-2 ${sunBgColor}`}
               >
                 <span>{`${forecast.sun} h`}</span>
               </div>
+              <Tooltip
+                content={forecast.pqiDescription}
+                className={pqiBgColor}
+                popoverClassName="w-[360px] text-center"
+              >
+                <div
+                  className={`flex flex-col h-[56px] justify-center items-center py-2`}
+                >
+                  <span>{forecast.pqi ?? 0}</span>
+                </div>
+              </Tooltip>
             </div>
           );
         })}
