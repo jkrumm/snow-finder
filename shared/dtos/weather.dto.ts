@@ -1,5 +1,5 @@
 export interface ForecastDto {
-    date: string;
+  date: string;
   img: string;
   tmax: number;
   tmin: number;
@@ -12,11 +12,13 @@ export interface ForecastDto {
 export interface ResortDto {
   id: string;
   name: string;
+  long: number;
+  lat: number;
   valleyHeight: number;
   mountainHeight: number;
   freshSnow: number;
   liftsOpen: number;
   liftsTotal: number;
-  dailyForecasts: ForecastDto[] | null;
-  hourlyForecasts: ForecastDto[] | null;
+  dailyForecasts: ForecastDto[];
+  hourlyForecasts: ForecastDto[];
 }

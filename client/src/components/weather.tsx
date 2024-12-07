@@ -70,9 +70,7 @@ export function Weather() {
   const fetchResorts = async () => {
     if (resorts.value.length > 0) return;
     const response = await fetch("http://localhost:8000/api/resorts");
-    resorts.value = await response.json()
-
-      console.log(resorts.value.map((r) => r.name));
+    resorts.value = await response.json();
   };
 
   useEffect(() => {

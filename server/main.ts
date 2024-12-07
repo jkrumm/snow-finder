@@ -14,7 +14,7 @@ app.use(
     }),
 );
 
-const weather = await Weather.init();
+export const weather = await Weather.init();
 
 router.get("/api/resorts", async (context) => {
   context.response.body = await weather.getResortDtos();

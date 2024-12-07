@@ -9,15 +9,24 @@ import * as cheerio from "cheerio";
 import { DateTime } from "luxon";
 import { Forecast } from "../data/weather.ts";
 
-export const fetchDailyForecast = async (
+export interface ResortDetails {
+  lat: number;
+  long: number;
+}
+
+export async function fetchDailyForecast(
   resortId: string,
-): Promise<Forecast[]> => {
+): Promise<{ dailyForecasts: Forecast[]; resortDetails: ResortDetails }> {
   const html = await fetchPage(
     `https://www.bergfex.at/${resortId}/wetter/berg/`,
   );
   const $ = cheerio.load(html);
 
-  const forecasts: Forecast[] = [];
+  const dailyForecasts: Forecast[] = [];
+
+  const geoPosition = $("meta[name='geoposition']").attr("content");
+  const lat = geoPosition ? parseFloat(geoPosition.split(",")[0]) : 0;
+  const long = geoPosition ? parseFloat(geoPosition.split(",")[1]) : 0;
 
   $(".day.clickable.selectable.fields, .day.clickable.trend.fields").each(
     (index, element) => {
@@ -45,7 +54,7 @@ export const fetchDailyForecast = async (
       const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
       const wind = $(element).find(".ff").text().trim();
 
-      forecasts.push({
+        dailyForecasts.push({
         date,
         img, // vcdn.bergfex.at/images/wetter/bergfex-shaded/b3s2.png
         tmax,
@@ -57,5 +66,6 @@ export const fetchDailyForecast = async (
       });
     },
   );
-  return forecasts;
-};
+
+  return { dailyForecasts, resortDetails: { lat, long } };
+}

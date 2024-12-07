@@ -9,9 +9,9 @@ import * as cheerio from "cheerio";
 import { Forecast } from "../data/weather.ts";
 import { DateTime } from "luxon";
 
-export const fetchHourlyForecast = async (
+export async function fetchHourlyForecast (
   skiAreaUrl: string,
-): Promise<Forecast[]> => {
+): Promise<Forecast[]> {
   const forecastHourly: Forecast[] = [];
 
   const html = await fetchPage(

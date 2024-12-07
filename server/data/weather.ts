@@ -1,9 +1,7 @@
 import { DateTime } from "luxon";
-import { fetchResorts } from "../util/fetch-resorts.helper.ts";
 import { isElapsed } from "../util/date.helper.ts";
-import { fetchDailyForecast } from "../util/fetch-daily-forecast.helper.ts";
-import { fetchHourlyForecast } from "../util/fetch-hourly-forecast.helper.ts";
 import { ResortDto } from "../../shared/dtos/weather.dto.ts";
+import { getRecentResorts } from "../util/fetch.helper.ts";
 
 export class Forecast {
   date: DateTime;
@@ -41,6 +39,8 @@ export class Forecast {
 export class Resort {
   readonly id: string;
   readonly name: string;
+  long: number;
+  lat: number;
   valleyHeight: number;
   mountainHeight: number;
   freshSnow: number;
@@ -48,27 +48,29 @@ export class Resort {
   liftsTotal: number;
   date: DateTime;
   lastUpdated: DateTime;
-
-  dailyForecastUpdated: DateTime | null;
-  dailyForecasts: Forecast[] | null;
-
-  hourlyForecastUpdated: DateTime | null;
-  hourlyForecasts: Forecast[] | null;
+  dailyForecasts: Forecast[];
+  hourlyForecasts: Forecast[];
 
   constructor(
     data: {
       id: string;
       name: string;
+      long: number;
+      lat: number;
       valleyHeight: number;
       mountainHeight: number;
       freshSnow: number;
       liftsOpen: number;
       liftsTotal: number;
       date: DateTime;
+      dailyForecasts: Forecast[];
+      hourlyForecasts: Forecast[];
     },
   ) {
     this.id = data.id;
     this.name = data.name;
+    this.long = data.long;
+    this.lat = data.lat;
     this.valleyHeight = data.valleyHeight;
     this.mountainHeight = data.mountainHeight;
     this.freshSnow = data.freshSnow;
@@ -76,58 +78,16 @@ export class Resort {
     this.liftsTotal = data.liftsTotal;
     this.date = data.date;
     this.lastUpdated = DateTime.now();
-    this.dailyForecastUpdated = null;
-    this.dailyForecasts = null;
-    this.hourlyForecastUpdated = null;
-    this.hourlyForecasts = null;
+    this.dailyForecasts = data.dailyForecasts;
+    this.hourlyForecasts = data.hourlyForecasts;
   }
 
-  update = (resort: {
-    valleyHeight: number;
-    mountainHeight: number;
-    freshSnow: number;
-    liftsOpen: number;
-    liftsTotal: number;
-    date: DateTime;
-  }): this => {
-    this.valleyHeight = resort.valleyHeight;
-    this.mountainHeight = resort.mountainHeight;
-    this.freshSnow = resort.freshSnow;
-    this.liftsOpen = resort.liftsOpen;
-    this.liftsTotal = resort.liftsTotal;
-    this.date = resort.date;
-    this.lastUpdated = DateTime.now();
-    return this;
-  };
-
-  updateDailyForecast = async (): Promise<this> => {
-    if (
-      this.dailyForecastUpdated && !isElapsed(this.dailyForecastUpdated, 30)
-    ) {
-      return this;
-    }
-    this.dailyForecasts = await fetchDailyForecast(this.id);
-    this.dailyForecastUpdated = DateTime.now();
-    return this;
-  };
-
-  updateHourlyForecast = async (): Promise<this> => {
-    if (
-      this.hourlyForecastUpdated && !isElapsed(this.hourlyForecastUpdated, 10)
-    ) {
-      return this;
-    }
-    this.hourlyForecasts = await fetchHourlyForecast(this.id);
-    this.hourlyForecastUpdated = DateTime.now();
-    return this;
-  };
-
-  toResortDto = async (): Promise<ResortDto> => {
-    await this.updateDailyForecast();
-    await this.updateHourlyForecast();
+  toResortDto(): ResortDto {
     return {
       id: this.id,
       name: this.name,
+      long: this.long,
+      lat: this.lat,
       valleyHeight: this.valleyHeight,
       mountainHeight: this.mountainHeight,
       freshSnow: this.freshSnow,
@@ -136,7 +96,7 @@ export class Resort {
       dailyForecasts: this.dailyForecasts,
       hourlyForecasts: this.hourlyForecasts,
     };
-  };
+  }
 }
 
 export class Weather {
@@ -149,33 +109,16 @@ export class Weather {
   }
 
   static async init(): Promise<Weather> {
-    const resorts = await fetchResorts();
+    const resorts = await getRecentResorts();
     return new Weather(resorts);
   }
 
-  updateResorts = async (): Promise<this> => {
+  async updateResorts(): Promise<void> {
     if (isElapsed(this.lastUpdated, 10)) {
-      return this;
+      this.lastUpdated = DateTime.now();
+      this.resorts = await getRecentResorts();
     }
-
-    const resorts = await fetchResorts();
-    resorts.forEach((resort: Resort) => {
-      const existingResort = this.resorts.find((r) => r.id === resort.id);
-      if (existingResort) {
-        existingResort.update(resort);
-      } else {
-        this.resorts.push(resort);
-      }
-    });
-
-    // NOTE: Remove resorts that are no longer in the list
-    this.resorts = this.resorts.filter((resort) =>
-      resorts.find((r: { id: string }) => r.id === resort.id)
-    );
-
-    this.lastUpdated = DateTime.now();
-    return this;
-  };
+  }
 
   getResortDtos = async (): Promise<ResortDto[]> => {
     await this.updateResorts();
@@ -196,19 +139,6 @@ export class Weather {
     if (!resort) {
       throw new Error("Resort not found after update");
     }
-
-    if (isElapsed(resort.lastUpdated, 5)) {
-      await this.updateResorts();
-    }
-
-    resort = this.resorts.find((resort) => resort.id === id);
-
-    if (!resort) {
-      throw new Error("Resort not found after elapsed");
-    }
-
-    await resort.updateDailyForecast();
-    await resort.updateHourlyForecast();
 
     return resort.toResortDto();
   };

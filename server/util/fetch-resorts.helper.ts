@@ -1,13 +1,23 @@
 import { convertCmToNumber, fetchPage } from "./parser.helper.ts";
 import * as cheerio from "cheerio";
-import { Resort } from "../data/weather.ts";
 import { DateTime } from "luxon";
 
-export const fetchResorts = async (): Promise<Resort[]> => {
-  const html = await fetchPage("https://www.bergfex.at/tirol/schneewerte/");
+export interface FetchResort {
+  id: string;
+  name: string;
+  valleyHeight: number;
+  mountainHeight: number;
+  freshSnow: number;
+  liftsOpen: number;
+  liftsTotal: number;
+  date: DateTime;
+}
+
+export async function fetchResorts(): Promise<FetchResort[]> {
+  const html: string = await fetchPage("https://www.bergfex.at/tirol/schneewerte/");
   const $ = cheerio.load(html);
 
-  const resorts: Resort[] = [];
+  const resorts: FetchResort[] = [];
 
   // deno-lint-ignore no-unused-vars
   $("tbody tr").each((index, element) => {
@@ -44,7 +54,7 @@ export const fetchResorts = async (): Promise<Resort[]> => {
     }
 
     resorts.push(
-      new Resort({
+      {
         id,
         name,
         valleyHeight,
@@ -53,7 +63,7 @@ export const fetchResorts = async (): Promise<Resort[]> => {
         liftsOpen,
         liftsTotal,
         date,
-      }),
+      },
     );
   });
 
@@ -65,4 +75,4 @@ export const fetchResorts = async (): Promise<Resort[]> => {
   });
 
   return resorts;
-};
+}
