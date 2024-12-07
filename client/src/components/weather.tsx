@@ -4,7 +4,8 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { Button, ButtonGroup, Card, Elevation, H3 } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { ForecastTable } from "./forecast-table.tsx";
-export const weather = signal<ResortDto[]>([]);
+
+export const resorts = signal<ResortDto[]>([]);
 
 export const favorites = signal<string[]>([
   "fieberbrunn",
@@ -35,7 +36,7 @@ const Statistic = ({ label, value, prepend, append, className }: {
 );
 
 export const favoriteResorts = computed<ResortDto[]>(() => {
-  return weather.value.filter((resort) => favorites.value.includes(resort.id))
+  return resorts.value.filter((resort) => favorites.value.includes(resort.id))
     .sort(
       (a: ResortDto, b: ResortDto) => {
         if (sorting.value === "freshSnow") {
@@ -59,9 +60,9 @@ export function Weather() {
   useSignals();
 
   const fetchResorts = async () => {
-    if (weather.value.length > 0) return;
+    if (resorts.value.length > 0) return;
     const response = await fetch("http://localhost:8000/api/resorts");
-    weather.value = await response.json();
+    resorts.value = await response.json();
   };
 
   useEffect(() => {
@@ -69,7 +70,7 @@ export function Weather() {
   }, [favorites.value]);
 
   return (
-    <div className="w-[2000px] max-w-screen p-4">
+    <div className="w-[1600px] max-w-screen p-4">
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-2">
         {favoriteResorts.value.map((resort) => {
           return (
