@@ -9,13 +9,18 @@ import {
 } from "./util/ai-powder-quality.helper.ts";
 import { DateTime } from "luxon";
 import { isElapsed } from "./util/date.helper.ts";
+import { env } from "node:process";
 
 export const app = new Application();
 const router = new Router();
 
+export const baseUrl = Deno.env.get("BASE_URL") || env.BASE_URL || "http://localhost:8000";
+
 app.use(
   oakCors({
-    origin: "http://localhost:3000",
+    origin: baseUrl === "http://localhost:8000"
+      ? "http://localhost:3000"
+      : baseUrl,
   }),
 );
 
@@ -47,7 +52,6 @@ router.get("/api/pqi/:id", async (context) => {
     context.response.body = existingPqi;
     return;
   }
-
 
   if (Deno.env.get("DATA_SAVING")) {
     context.response.body = [];

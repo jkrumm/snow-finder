@@ -1,11 +1,10 @@
 import "./App.scss";
 import { useSignals } from "@preact/signals-react/runtime";
-import { H1 } from "@blueprintjs/core";
 import { Weather } from "./components/weather.tsx";
 import { Favorites } from "./components/favorites.tsx";
 import { Settings } from "./components/settings.tsx";
 import { Map } from "./components/map.tsx";
-import { getPathTitle, path, Paths, usePath } from "./hooks/use-path.ts";
+import { path, Paths, usePath } from "./hooks/use-path.ts";
 import { Navigation } from "./components/navigation.tsx";
 
 function App() {
@@ -39,7 +38,7 @@ function App() {
     <div className="bp5-dark" id="content">
       <Navigation />
       <div id="wrapper">
-          <Component />
+        <Component />
       </div>
     </div>
   );

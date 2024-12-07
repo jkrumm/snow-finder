@@ -6,9 +6,13 @@ async function fetchPqiData() {
     (resort) => resort.dailyForecasts && !resort.dailyForecasts[0].pqi,
   );
 
+  const baseUrl = window.location.origin.includes("localhost")
+    ? "http://localhost:8000"
+    : window.location.origin;
+
   const pqiPromises = favoriteResortsThatNeedPqi.map((resort: ResortDto) =>
     fetch(
-      `${Deno.env.get("BASE_URL")}/api/pqi/${resort.id}`,
+      `${baseUrl}/api/pqi/${resort.id}`,
     ).then((response) => response.json() as Promise<PqiDto>)
   );
 
@@ -43,7 +47,10 @@ async function fetchPqiData() {
 
 export async function fetchResorts() {
   if (resorts.value.length > 0) return;
-  const response = await fetch(Deno.env.get("BASE_URL") + "/api/resorts");
+  const baseUrl = window.location.origin.includes("localhost")
+    ? "http://localhost:8000"
+    : window.location.origin;
+  const response = await fetch(baseUrl + "/api/resorts");
   resorts.value = await response.json();
   await fetchPqiData();
 }
