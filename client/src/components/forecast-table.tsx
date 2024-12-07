@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 
 import { DateTime } from "luxon";
 import { ForecastDto } from "../../../shared/dtos/weather.dto.ts";
+import { translateWeekday } from "../constants/translations.ts";
 
 function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
@@ -32,6 +33,9 @@ export const ForecastTable = (
 ) => {
   const [selectedView, setSelectedView] = useState<"daily" | number>("daily");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDateWeekday, setSelectedDateWeekday] = useState<string | null>(
+    null,
+  );
   const [forecasts, setForecasts] = useState<Forecast[]>(props.dailyForecasts);
 
   const today = new Date();
@@ -46,6 +50,7 @@ export const ForecastTable = (
     setForecasts([...props.hourlyForecasts].filter((forecast) => {
       const date = DateTime.fromISO(forecast.date).startOf("day");
       const selectedDate = todayDate.plus({ days: selectedView });
+      setSelectedDateWeekday(selectedDate.toFormat("cccc"));
       return date.equals(selectedDate);
     }));
   }, [selectedView]);
@@ -59,13 +64,22 @@ export const ForecastTable = (
     );
   }, [forecasts]);
 
-  const gridConfigLegend = "grid-cols-[1fr_60px_45px_60px_40px_30px] sm:grid-cols-[1fr_70px_70px_60px_50px_50px]";
-  const gridConfigContent = "grid-cols-[1fr_35px_60px_45px_60px_40px_30px] sm:grid-cols-[1fr_40px_70px_70px_60px_50px_50px]";
+  let gridConfigLegend =
+    "grid-cols-[1fr_60px_45px_60px_45px_30px] sm:grid-cols-[1fr_70px_70px_60px_50px_50px]";
+  let gridConfigContent =
+    "grid-cols-[1fr_35px_60px_45px_60px_45px_30px] sm:grid-cols-[1fr_40px_70px_70px_60px_50px_50px]";
+
+  if (selectedView !== "daily") {
+    gridConfigLegend =
+      "grid-cols-[1fr_60px_45px_60px_45px] sm:grid-cols-[1fr_70px_70px_60px_50px]";
+    gridConfigContent =
+      "grid-cols-[1fr_35px_60px_45px_60px_45px] sm:grid-cols-[1fr_40px_70px_70px_60px_50px]";
+  }
 
   return (
     <>
       {selectedView !== "daily" && (
-        <ButtonGroup className="mt-4" fill>
+        <ButtonGroup className="mb-3 mt-1" fill>
           <Button
             onClick={() => {
               setSelectedView("daily");
@@ -77,6 +91,9 @@ export const ForecastTable = (
             onClick={() => {
               setSelectedView(selectedView - 1);
             }}
+            className={selectedView === 0
+              ? "!border-t-1 !border-b-1 !border-[#404854] !shadow-none"
+              : ""}
             disabled={selectedView === 0}
           >
             Vorheriger Tag
@@ -85,24 +102,30 @@ export const ForecastTable = (
             onClick={() => {
               setSelectedView(selectedView + 1);
             }}
-            disabled={selectedView === 5}
+            className={selectedView >= 4
+              ? "border-t-1 border-b-1 !border-[#404854] !shadow-none"
+              : ""}
+            disabled={selectedView >= 4}
           >
             Nächster Tag
           </Button>
         </ButtonGroup>
       )}
       <div className="flex flex-col mt-1 mb-[1px] mr-[1px]">
-        <div className={`grid border-b pb-2 border-[#404854] text-center font-bold ${gridConfigLegend}`}>
+        <div
+          className={`grid border-b pb-2 border-[#404854] text-center font-bold ${gridConfigLegend}`}
+        >
           <div className="text-left pl-2">
             {selectedView === "daily"
               ? "9 Tage"
-              : `${selectedDate}`}<span className="hidden sm:inline"> Vorhersgae</span>
+              : `${selectedDate} ${translateWeekday(selectedDateWeekday)}`}
+            <span className="hidden sm:inline">{" "}Vorhersage</span>
           </div>
           <div>Temp</div>
           <div>Wind</div>
           <div>Schnee</div>
           <div>Sonne</div>
-          <div>QI</div>
+          {selectedView === "daily" && <div>QI</div>}
         </div>
         {forecasts.map((forecast: ForecastDto, index: number) => {
           const dateObj = new Date(forecast.date);
@@ -183,10 +206,12 @@ export const ForecastTable = (
               key={forecast.date}
               className={`grid ${gridConfigContent} ${
                 index + 1 !== forecasts.length && "border-b"
-              } border-[#404854] ${index < 6 && "cursor-pointer"}`}
+              } border-[#404854] ${
+                (index < 6 && selectedView === "daily") && "cursor-pointer"
+              }`}
               onClick={() => {
-                if (index > 5) return;
-                setSelectedView(index);
+                if (index > 5 || selectedView !== "daily") return;
+                setSelectedView(index - 1);
               }}
             >
               <div className="flex flex-col h-[56px] justify-center py-2 pl-2">
@@ -223,9 +248,7 @@ export const ForecastTable = (
                   className={`flex justify-center h-[56px] flex-col items-center py-2`}
                 >
                   <span>
-                    {selectedView === "daily"
-                      ? forecast.windBft
-                      : forecast.windSpeed + "km/h"}
+                    {forecast.windBft}
                   </span>
                   <span className="text-sm muted truncate">
                     {forecast.windDirection}
@@ -235,13 +258,16 @@ export const ForecastTable = (
               <div
                 className={`flex justify-center h-[56px] flex-col items-center py-2 ${snowColor}`}
               >
-                {!!forecast.freshSnow && !!forecast.rainAmount && (
+                {(!!forecast.freshSnow || !!forecast.rainAmount) && (
                   <>
                     <span>{`${forecast.freshSnow ?? 0}cm`}</span>
                     <span className="text-sm muted">
-                      {`${(forecast.rainRisc * 100).toFixed(0)}%${
-                        forecast.rainAmount ? ` ${forecast.rainAmount}l` : ""
-                      }`}
+                      {`${(forecast.rainRisc * 100).toFixed(0)}%`}
+                      {!!forecast.rainAmount && (
+                        <span className="hidden sm:inline">
+                          {forecast.rainAmount}l
+                        </span>
+                      )}
                     </span>
                   </>
                 )}
@@ -251,17 +277,19 @@ export const ForecastTable = (
               >
                 <span>{`${forecast.sun} h`}</span>
               </div>
-              <Tooltip
-                content={forecast.pqiDescription}
-                className={pqiBgColor}
-                popoverClassName="w-[360px] text-center"
-              >
-                <div
-                  className={`flex flex-col h-[56px] justify-center items-center py-2`}
+              {selectedView === "daily" && (
+                <Tooltip
+                  content={forecast.pqiDescription}
+                  className={pqiBgColor}
+                  popoverClassName="w-[360px] text-center"
                 >
-                  <span>{forecast.pqi ?? 0}</span>
-                </div>
-              </Tooltip>
+                  <div
+                    className={`flex flex-col h-[56px] justify-center items-center py-2`}
+                  >
+                    <span>{forecast.pqi ?? 0}</span>
+                  </div>
+                </Tooltip>
+              )}
             </div>
           );
         })}

@@ -8,6 +8,7 @@ import {
   Card,
   Elevation,
   H3,
+  Tooltip,
 } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { ForecastTable } from "./forecast-table.tsx";
@@ -144,18 +145,27 @@ export function Weather() {
                 />
               </div>
 
-              <Pqi resort={resort} index={new Date().getHours() >= 12 ? 1 : 0} />
+              <Pqi
+                resort={resort}
+                index={new Date().getHours() >= 12 ? 1 : 0}
+              />
 
               <div className="flex h-[56px]">
                 {statuses.map((status: Status) => (
-                  <Callout
+                  <Tooltip
                     key={status.title}
-                    icon={false}
-                    className={`m-2 truncate text-center`}
-                    intent={status.intend}
-                    title={status.title}
-                    compact
-                  />
+                    content={status.tooltip}
+                    position="bottom"
+                    className="flex-1 m-2"
+                  >
+                    <Callout
+                      icon={false}
+                      className={`truncate text-center`}
+                      intent={status.intend}
+                      title={status.title}
+                      compact
+                    />
+                  </Tooltip>
                 ))}
               </div>
 
