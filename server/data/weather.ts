@@ -3,6 +3,7 @@ import { fetchResorts } from "../util/fetch-resorts.helper.ts";
 import { isElapsed } from "../util/date.helper.ts";
 import { fetchDailyForecast } from "../util/fetch-daily-forecast.helper.ts";
 import { fetchHourlyForecast } from "../util/fetch-hourly-forecast.helper.ts";
+import { ResortDto, ResortListDto } from "../../shared/dtos/weather.dto.ts";
 
 export class Forecast {
   date: DateTime;
@@ -38,8 +39,8 @@ export class Forecast {
 }
 
 export class Resort {
-  id: string;
-  name: string;
+  readonly id: string;
+  readonly name: string;
   valleyHeight: number;
   mountainHeight: number;
   freshSnow: number;
@@ -63,7 +64,7 @@ export class Resort {
       freshSnow: number;
       liftsOpen: number;
       liftsTotal: number;
-      date: string;
+      date: DateTime;
     },
   ) {
     this.id = data.id;
@@ -87,7 +88,7 @@ export class Resort {
     freshSnow: number;
     liftsOpen: number;
     liftsTotal: number;
-    date: string;
+    date: DateTime;
   }): this => {
     this.valleyHeight = resort.valleyHeight;
     this.mountainHeight = resort.mountainHeight;
@@ -96,13 +97,12 @@ export class Resort {
     this.liftsTotal = resort.liftsTotal;
     this.date = resort.date;
     this.lastUpdated = DateTime.now();
-
     return this;
   };
 
   updateDailyForecast = async (): Promise<this> => {
     if (
-      this.dailyForecastUpdated && !isElapsed(this.dailyForecastUpdated, 10)
+      this.dailyForecastUpdated && !isElapsed(this.dailyForecastUpdated, 30)
     ) {
       return this;
     }
@@ -121,6 +121,59 @@ export class Resort {
     this.hourlyForecastUpdated = DateTime.now();
     return this;
   };
+
+  getFirstDailyForecast = async (): Promise<Forecast> => {
+    await this.updateDailyForecast();
+
+    if (!this.dailyForecasts) {
+      throw new Error("Daily forecasts not found");
+    }
+
+    if (this.dailyForecasts.length === 0) {
+      throw new Error("Daily forecasts empty");
+    }
+
+    return this.dailyForecasts[0];
+  };
+
+  toResortListDto = async (): Promise<ResortListDto> => {
+    await this.updateDailyForecast();
+    const firstDailyForecast = await this.getFirstDailyForecast();
+    return {
+      id: this.id,
+      name: this.name,
+      valleyHeight: this.valleyHeight,
+      mountainHeight: this.mountainHeight,
+      freshSnow: this.freshSnow,
+      liftsOpen: this.liftsOpen,
+      liftsTotal: this.liftsTotal,
+      date: this.date,
+      lastUpdated: this.lastUpdated,
+      firstDailyForecast,
+    };
+  };
+
+  toResortDto = async (): Promise<ResortDto> => {
+    await this.updateDailyForecast();
+    await this.updateHourlyForecast();
+    const firstDailyForecast = await this.getFirstDailyForecast();
+    return {
+      id: this.id,
+      name: this.name,
+      valleyHeight: this.valleyHeight,
+      mountainHeight: this.mountainHeight,
+      freshSnow: this.freshSnow,
+      liftsOpen: this.liftsOpen,
+      liftsTotal: this.liftsTotal,
+      date: this.date,
+      lastUpdated: this.lastUpdated,
+      firstDailyForecast,
+      dailyForecastUpdated: this.dailyForecastUpdated,
+      dailyForecasts: this.dailyForecasts,
+      hourlyForecastUpdated: this.hourlyForecastUpdated,
+      hourlyForecasts: this.hourlyForecasts,
+    };
+  };
 }
 
 export class Weather {
@@ -137,8 +190,8 @@ export class Weather {
     return new Weather(resorts);
   }
 
-  update = async (): Promise<this> => {
-    if (DateTime.now().diff(this.lastUpdated).as("minutes") < 5) {
+  updateResorts = async (): Promise<this> => {
+    if (isElapsed(this.lastUpdated, 10)) {
       return this;
     }
 
@@ -161,22 +214,28 @@ export class Weather {
     return this;
   };
 
-  getResort = async (id: string): Promise<Resort> => {
+  getResortListDtos = async (): Promise<ResortListDto[]> => {
+    await this.updateResorts();
+    const resortListDtos: ResortListDto[] = [];
+    for (const resort of this.resorts) {
+      resortListDtos.push(await resort.toResortListDto());
+    }
+    return resortListDtos;
+  };
+
+  getResort = async (id: string): Promise<ResortDto> => {
     let resort = this.resorts.find((resort) => resort.id === id);
 
     if (!resort) {
-      await this.update();
+      await this.updateResorts();
     }
-
-    console.log("resort", resort);
-    console.log("resorts", this.resorts);
 
     if (!resort) {
       throw new Error("Resort not found after update");
     }
 
     if (isElapsed(resort.lastUpdated, 5)) {
-      await this.update();
+      await this.updateResorts();
     }
 
     resort = this.resorts.find((resort) => resort.id === id);
@@ -188,6 +247,6 @@ export class Weather {
     await resort.updateDailyForecast();
     await resort.updateHourlyForecast();
 
-    return resort;
+    return resort.toResortDto();
   };
 }
