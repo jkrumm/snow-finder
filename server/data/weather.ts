@@ -122,20 +122,6 @@ export class Resort {
     return this;
   };
 
-  toResortListDto = async (): Promise<ResortListDto> => {
-    await this.updateDailyForecast();
-    return {
-      id: this.id,
-      name: this.name,
-      valleyHeight: this.valleyHeight,
-      mountainHeight: this.mountainHeight,
-      freshSnow: this.freshSnow,
-      liftsOpen: this.liftsOpen,
-      liftsTotal: this.liftsTotal,
-      dailyForecasts: this.dailyForecasts,
-    };
-  };
-
   toResortDto = async (): Promise<ResortDto> => {
     await this.updateDailyForecast();
     await this.updateHourlyForecast();
