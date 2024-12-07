@@ -4,7 +4,7 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 
 import { DateTime } from "luxon";
 
-const formatDate = (date: number, today: number): string => {
+function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
     .format(date);
   const dayDifference = Math.floor((date - today) / (1000 * 60 * 60 * 24));
@@ -13,7 +13,7 @@ const formatDate = (date: number, today: number): string => {
   if (dayDifference === 0) return "Morgen";
 
   return formattedDate;
-};
+}
 
 const formatTime = (date: number): string => {
   return new Intl.DateTimeFormat("de-DE", {
@@ -134,30 +134,27 @@ export const ForecastTable = (
             sunBgColor = `bg-yellow-extreme`;
           }
 
-          const windSpeed = parseInt(forecast.wind.split(" ")[1]);
-          const windDirection = forecast.wind.split(" ")[0];
-
           let windBgColor = `bg-[#252a31]`;
           let windDescription = "< 1km/h";
-          if (windSpeed > 0) {
+          if (forecast.windSpeed > 0) {
             windDescription = "1-5km/h";
           }
-          if (windSpeed > 1) {
+          if (forecast.windSpeed > 1) {
             windDescription = "6-11km/h";
           }
-          if (windSpeed > 2) {
+          if (forecast.windSpeed > 2) {
             windBgColor = `bg-red-low`;
             windDescription = "12-19km/h";
           }
-          if (windSpeed > 3) {
+          if (forecast.windSpeed > 3) {
             windBgColor = `bg-red-medium`;
             windDescription = "20-28km/h";
           }
-          if (windSpeed > 4) {
+          if (forecast.windSpeed > 4) {
             windBgColor = `bg-red-high`;
             windDescription = "29-38km/h";
           }
-          if (windSpeed > 5) {
+          if (forecast.windSpeed > 5) {
             windBgColor = `bg-red-extreme`;
             windDescription = "> 39km/h";
           }
@@ -192,12 +189,18 @@ export const ForecastTable = (
               <div className="flex justify-center items-center py-2">
                 <span>{`${forecast.tmax}°/${forecast.tmin}°`}</span>
               </div>
-              <Tooltip content={windDescription} position="top">
+              <Tooltip
+                content={windDescription}
+                position="top"
+                className={windBgColor}
+              >
                 <div
-                  className={`flex justify-center flex-col items-center py-2 bg-opacity-20 ${windBgColor}`}
+                  className={`flex justify-center flex-col items-center py-2 bg-opacity-20`}
                 >
-                  <span>{windSpeed}</span>
-                  <span className="text-sm muted truncate">{windDirection}</span>
+                  <span>{forecast.windSpeed}</span>
+                  <span className="text-sm muted truncate">
+                    {forecast.windDirection}
+                  </span>
                 </div>
               </Tooltip>
               <div

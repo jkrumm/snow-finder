@@ -3,10 +3,14 @@ export interface ForecastDto {
   img: string;
   tmax: number;
   tmin: number;
+  snowline: number;
   freshSnow: number;
   rainRisc: number;
+  rainAmount: number;
   sun: number;
-  wind: string;
+  windBft: number;
+  windDirection: string;
+  windSpeed: number;
 }
 
 export interface ResortDto {
@@ -14,6 +18,8 @@ export interface ResortDto {
   name: string;
   long: number;
   lat: number;
+  resortValleyHeight: number;
+  resortMountainHeight: number;
   valleyHeight: number;
   mountainHeight: number;
   freshSnow: number;

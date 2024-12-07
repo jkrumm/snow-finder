@@ -1,5 +1,5 @@
 import {
-  convertCmToNumber,
+  convertCmOrMToNumber,
   convertHoursToNumber,
   convertPercentageToNumber,
   convertTemperatureToNumber,
@@ -9,7 +9,7 @@ import * as cheerio from "cheerio";
 import { Forecast } from "../data/weather.ts";
 import { DateTime } from "luxon";
 
-export async function fetchHourlyForecast (
+export async function fetchHourlyForecast(
   skiAreaUrl: string,
 ): Promise<Forecast[]> {
   const forecastHourly: Forecast[] = [];
@@ -35,14 +35,28 @@ export async function fetchHourlyForecast (
       const tmin = convertTemperatureToNumber(
         $(element).find(".group.offset .tmax").last().text().trim(),
       );
-      const freshSnow = convertCmToNumber(
+      const snowline = convertCmOrMToNumber(
+        $(element).find(".sgrenze").text().trim(),
+      );
+      const freshSnow = convertCmOrMToNumber(
         $(element).find(".group .nschnee").first().text().trim(),
       );
       const rainRisc = convertPercentageToNumber(
         $(element).find(".rrp").text().trim(),
       );
+      const rainAmount = parseFloat(
+        $(element).find(".rrr").text().trim().replace("l", ""),
+      ) || 0;
       const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
       const wind = $(element).find(".group .ff").first().text().trim();
+      const windBft = parseInt(wind.split(" ")[1]);
+      const windDirection = wind.split(" ")[0];
+      const windSpeed = parseInt(
+        $(element).find(".group .ff.ff-kmh").first().text().trim().replace(
+          " km/h",
+          "",
+        ),
+      );
 
       if (hour > 7) {
         return;
@@ -57,13 +71,17 @@ export async function fetchHourlyForecast (
         img,
         tmax,
         tmin,
+        snowline,
         freshSnow,
         rainRisc,
+        rainAmount,
         sun,
-        wind,
+        windBft,
+        windDirection,
+        windSpeed,
       });
     });
   });
 
   return forecastHourly;
-};
+}

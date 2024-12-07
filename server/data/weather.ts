@@ -8,10 +8,14 @@ export class Forecast {
   img: string;
   tmax: number;
   tmin: number;
+  snowline: number;
   freshSnow: number;
   rainRisc: number;
+  rainAmount: number;
   sun: number;
-  wind: string;
+  windBft: number;
+  windDirection: string;
+  windSpeed: number;
 
   constructor(
     data: {
@@ -19,28 +23,38 @@ export class Forecast {
       img: string;
       tmax: number;
       tmin: number;
+      snowline: number;
       freshSnow: number;
       rainRisc: number;
+      rainAmount: number;
       sun: number;
-      wind: string;
+      windBft: number;
+      windDirection: string;
+      windSpeed: number;
     },
   ) {
     this.date = data.date;
     this.img = data.img;
     this.tmax = data.tmax;
     this.tmin = data.tmin;
+    this.snowline = data.snowline;
     this.freshSnow = data.freshSnow;
+    this.rainAmount = data.rainAmount;
     this.rainRisc = data.rainRisc;
     this.sun = data.sun;
-    this.wind = data.wind;
+    this.windBft = data.windBft;
+    this.windDirection = data.windDirection;
+    this.windSpeed = data.windSpeed;
   }
 }
 
 export class Resort {
-  readonly id: string;
-  readonly name: string;
+  id: string;
+  name: string;
   long: number;
   lat: number;
+  resortValleyHeight: number;
+  resortMountainHeight: number;
   valleyHeight: number;
   mountainHeight: number;
   freshSnow: number;
@@ -57,6 +71,8 @@ export class Resort {
       name: string;
       long: number;
       lat: number;
+      resortValleyHeight: number;
+      resortMountainHeight: number;
       valleyHeight: number;
       mountainHeight: number;
       freshSnow: number;
@@ -71,6 +87,8 @@ export class Resort {
     this.name = data.name;
     this.long = data.long;
     this.lat = data.lat;
+    this.resortValleyHeight = data.resortValleyHeight;
+    this.resortMountainHeight = data.resortMountainHeight;
     this.valleyHeight = data.valleyHeight;
     this.mountainHeight = data.mountainHeight;
     this.freshSnow = data.freshSnow;
@@ -88,6 +106,8 @@ export class Resort {
       name: this.name,
       long: this.long,
       lat: this.lat,
+      resortValleyHeight: this.resortValleyHeight,
+      resortMountainHeight: this.resortMountainHeight,
       valleyHeight: this.valleyHeight,
       mountainHeight: this.mountainHeight,
       freshSnow: this.freshSnow,
@@ -114,23 +134,23 @@ export class Weather {
   }
 
   async updateResorts(): Promise<void> {
-    if (isElapsed(this.lastUpdated, 10)) {
-      this.lastUpdated = DateTime.now();
-      this.resorts = await getRecentResorts();
-    }
+    // if (isElapsed(this.lastUpdated, 10)) {
+    this.lastUpdated = DateTime.now();
+    this.resorts = await getRecentResorts();
+    // }
   }
 
   getResortDtos = async (): Promise<ResortDto[]> => {
     await this.updateResorts();
     const resortDtos: ResortDto[] = [];
     for (const resort of this.resorts) {
-      resortDtos.push(await resort.toResortDto());
+      resortDtos.push(resort.toResortDto());
     }
     return resortDtos;
   };
 
   getResort = async (id: string): Promise<ResortDto> => {
-    let resort = this.resorts.find((resort) => resort.id === id);
+    const resort = this.resorts.find((resort) => resort.id === id);
 
     if (!resort) {
       await this.updateResorts();

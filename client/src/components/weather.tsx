@@ -79,7 +79,7 @@ export function Weather() {
 
   return (
     <div className="w-[1600px] max-w-screen p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
         {favoriteResorts.value.map((resort) => {
           const statuses = getStatuses(resort);
           return (
@@ -126,7 +126,7 @@ export function Weather() {
                   />
                 ))}
               </div>
-              <div className="grid grid-cols-4 grid-rows-2 gap-x-2 gap-y-5 w-full muted-bg">
+              <div className="grid grid-cols-4 grid-rows-1 gap-x-2 gap-y-5 w-full muted-bg mt-2">
                 <Statistic
                   label="Tal"
                   value={resort.valleyHeight}
@@ -146,26 +146,26 @@ export function Weather() {
                   label="Lifte"
                   value={`${resort.liftsOpen}/${resort.liftsTotal}`}
                 />
-                <Statistic
-                  label="Temperatur"
-                  value={`${resort.dailyForecasts![0].tmax}° / ${
-                    resort.dailyForecasts![0].tmin
-                  }°`}
-                />
-                <Statistic
-                  label="Sonne"
-                  value={resort.dailyForecasts![0].sun}
-                  append=" h"
-                />
-                <Statistic
-                  label="Wind"
-                  value={resort.dailyForecasts![0].wind}
-                />
-                <Statistic
-                  label="Regenrisiko"
-                  value={(resort.dailyForecasts![0].rainRisc) * 100}
-                  append=" %"
-                />
+                {/*<Statistic*/}
+                {/*  label="Temperatur"*/}
+                {/*  value={`${resort.dailyForecasts![0].tmax}° / ${*/}
+                {/*    resort.dailyForecasts![0].tmin*/}
+                {/*  }°`}*/}
+                {/*/>*/}
+                {/*<Statistic*/}
+                {/*  label="Sonne"*/}
+                {/*  value={resort.dailyForecasts![0].sun}*/}
+                {/*  append=" h"*/}
+                {/*/>*/}
+                {/*<Statistic*/}
+                {/*  label="Wind"*/}
+                {/*  value={resort.dailyForecasts![0].wind}*/}
+                {/*/>*/}
+                {/*<Statistic*/}
+                {/*  label="Regenrisiko"*/}
+                {/*  value={(resort.dailyForecasts![0].rainRisc) * 100}*/}
+                {/*  append=" %"*/}
+                {/*/>*/}
               </div>
 
               {showForecasts.value && (

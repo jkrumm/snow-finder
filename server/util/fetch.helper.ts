@@ -15,6 +15,29 @@ export async function getRecentResorts(): Promise<Resort[]> {
 
     const hourlyForecasts = await fetchHourlyForecast(fetchedResort.id);
 
+    // Calculate average windSpeed and snowline for each day
+    for (const dailyForecast of dailyForecasts) {
+      const hourlyForecastsForDay = hourlyForecasts.filter((hourlyForecast) =>
+        hourlyForecast.date.hasSame(dailyForecast.date, "day")
+      );
+
+      const windSpeeds = hourlyForecastsForDay.map((hourlyForecast) =>
+        hourlyForecast.windSpeed
+      );
+      dailyForecast.windSpeed = Math.round(
+        windSpeeds.reduce((a, b) => a + b, 0) /
+          windSpeeds.length,
+      );
+
+      const snowlines = hourlyForecastsForDay.map((hourlyForecast) =>
+        hourlyForecast.snowline
+      );
+      dailyForecast.snowline = Math.round(
+        snowlines.reduce((a, b) => a + b, 0) /
+          snowlines.length,
+      );
+    }
+
     resorts.push(
       new Resort({
         ...fetchedResort,
