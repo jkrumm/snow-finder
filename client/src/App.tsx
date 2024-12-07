@@ -35,19 +35,19 @@ function App() {
   }, [favorites]);
 
   return (
-    <>
-      <h1>Resorts</h1>
-      <div>
-        {favoriteResorts.value.map((resort: ResortListDto) => (
-          <div key={resort.id}>{resort.id}</div>
-        ))}
-      </div>
-      <br />
-      <br />
-      <div>
-        {resortIds.value.map((id) => <div key={id}>{id}</div>)}
-      </div>
-    </>
+      <main className="bp5-dark">
+          <h1>Resorts</h1>
+          <div>
+              {favoriteResorts.value.map((resort: ResortListDto) => (
+                  <div key={resort.id}>{resort.id}</div>
+              ))}
+          </div>
+          <br/>
+          <br/>
+          <div>
+              {resortIds.value.map((id) => <div key={id}>{id}</div>)}
+          </div>
+      </main>
   );
 }
 
