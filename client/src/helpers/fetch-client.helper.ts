@@ -8,7 +8,7 @@ async function fetchPqiData() {
 
   const pqiPromises = favoriteResortsThatNeedPqi.map((resort: ResortDto) =>
     fetch(
-      `http://localhost:8000/api/pqi/${resort.id}`,
+      `${Deno.env.get("BASE_URL")}/api/pqi/${resort.id}`,
     ).then((response) => response.json() as Promise<PqiDto>)
   );
 
@@ -44,7 +44,7 @@ async function fetchPqiData() {
 
 export async function fetchResorts() {
   if (resorts.value.length > 0) return;
-  const response = await fetch("http://localhost:8000/api/resorts");
+  const response = await fetch(Deno.env.get("BASE_URL") + "/api/resorts");
   resorts.value = await response.json();
   console.log("resorts fetched", resorts.value.map((resort) => ({name: resort.name, id: resort.id})) );
   await fetchPqiData();
