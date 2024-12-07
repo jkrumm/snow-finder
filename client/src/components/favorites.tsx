@@ -117,9 +117,9 @@ export function Favorites() {
   ]);
 
   return (
-    <div className="@container w-[730px] max-w-screen p-4">
-      <div className="mb-2 @lg:grid grid-cols-3 gap-4">
-        <Card compact className="!mb-3 @lg:!mb-0">
+    <div className="w-[730px] max-w-screen p-2 sm:p-4">
+      <div className="mb-2 sm:grid grid-cols-2 md:grid-cols-3 gap-4">
+        <Card compact className="!mb-3 sm:!mb-0">
           <H3>Saisonkarten filtern</H3>
           <FormGroup className="!mb-0 !mt-3">
             <Switch
@@ -138,7 +138,7 @@ export function Favorites() {
             />
           </FormGroup>
         </Card>
-        <Card compact className="!mb-3 @lg:!mb-0">
+        <Card compact className="!mb-3 sm:!mb-0">
           <H3>Region filtern</H3>
           <FormGroup className="!mb-0 !mt-3">
             <Switch
@@ -182,7 +182,7 @@ export function Favorites() {
             />
           </FormGroup>
         </Card>
-        <Card compact>
+        <Card compact className="col-span-2 md:col-span-1 mb-3 md:mb-0">
           <H3>Liftstatus filtern</H3>
           <FormGroup className="!mb-0 !mt-3" label="Anzahl geöffneter Lifte">
             <Slider
@@ -199,7 +199,7 @@ export function Favorites() {
         </Card>
       </div>
       <InputGroup
-        className="!mb-4"
+        className="!mb-4 mt-3"
         placeholder="Suche ..."
         value={search}
         fill
@@ -216,7 +216,7 @@ export function Favorites() {
         onChange={(e) => setSearch(e.target.value)}
       />
       <Divider />
-      <div className="@lg:grid grid-cols-2 gap-4 items-start mt-4">
+      <div className="sm:grid grid-cols-2 gap-4 items-start mt-4">
         <div className="mb-3">
           {filteredOutFavorites.length > 0 && (
             <div className="mb-5">

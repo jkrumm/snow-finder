@@ -6,7 +6,7 @@ export function Settings() {
   useSignals();
 
   return (
-    <div className="w-[500px] max-w-screen p-4">
+    <div className="w-[500px] max-w-screen p-2 sm:p-4">
       <H3>Sortieren nach</H3>
       <SegmentedControl
         onValueChange={(e) => {

@@ -59,6 +59,9 @@ export const ForecastTable = (
     );
   }, [forecasts]);
 
+  const gridConfigLegend = "grid-cols-[1fr_60px_45px_60px_40px_30px] sm:grid-cols-[1fr_70px_70px_60px_50px_50px]";
+  const gridConfigContent = "grid-cols-[1fr_35px_60px_45px_60px_40px_30px] sm:grid-cols-[1fr_40px_70px_70px_60px_50px_50px]";
+
   return (
     <>
       {selectedView !== "daily" && (
@@ -89,17 +92,17 @@ export const ForecastTable = (
         </ButtonGroup>
       )}
       <div className="flex flex-col mt-1 mb-[1px] mr-[1px]">
-        <div className="grid grid-cols-[1fr_70px_70px_60px_50px_50px] border-b pb-2 border-[#404854] text-center font-bold">
+        <div className={`grid border-b pb-2 border-[#404854] text-center font-bold ${gridConfigLegend}`}>
           <div className="text-left pl-2">
             {selectedView === "daily"
-              ? "9 Tage Vorhersage"
-              : `${selectedDate} Vorhersage`}
+              ? "9 Tage"
+              : `${selectedDate}`}<span className="hidden sm:inline"> Vorhersgae</span>
           </div>
           <div>Temp</div>
           <div>Wind</div>
           <div>Schnee</div>
           <div>Sonne</div>
-          <div>PQI</div>
+          <div>QI</div>
         </div>
         {forecasts.map((forecast: ForecastDto, index: number) => {
           const dateObj = new Date(forecast.date);
@@ -178,7 +181,7 @@ export const ForecastTable = (
           return (
             <div
               key={forecast.date}
-              className={`grid grid-cols-[1fr_40px_70px_70px_60px_50px_50px] ${
+              className={`grid ${gridConfigContent} ${
                 index + 1 !== forecasts.length && "border-b"
               } border-[#404854] ${index < 6 && "cursor-pointer"}`}
               onClick={() => {

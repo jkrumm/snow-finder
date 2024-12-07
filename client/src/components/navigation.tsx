@@ -7,7 +7,7 @@ export const Navigation = () => {
 
     const { navigate } = usePath();
 
-    return ( <Navbar>
+    return ( <Navbar className="!shadow-none border-t-1 md:border-t-0 md:border-b-1 border-[#404854]">
         <Navbar.Group className="justify-evenly !float-none">
             <Navbar.Heading
                 onClick={() => navigate(Paths.HOME)}
