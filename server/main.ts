@@ -17,7 +17,7 @@ app.use(
 const weather = await Weather.init();
 
 router.get("/api/resorts", async (context) => {
-  context.response.body = await weather.getResortListDtos();
+  context.response.body = await weather.getResortDtos();
 });
 
 router.get("/api/resorts/:id", async (context) => {

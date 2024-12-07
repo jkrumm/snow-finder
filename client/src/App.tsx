@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import "./App.scss";
-import { ResortListDto } from "../../shared/dtos/weather.dto.ts";
+import { ResortDto } from "../../shared/dtos/weather.dto.ts";
 import { computed, signal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
-import {ForecastTable} from "./components/forecast-table.tsx";
+import { ForecastTable } from "./components/forecast-table.tsx";
 import { MultiSelect } from "@blueprintjs/select";
 import {
   Button,
@@ -17,7 +17,7 @@ import {
   Switch,
 } from "@blueprintjs/core";
 
-const resorts = signal<ResortListDto[]>([]);
+const resorts = signal<ResortDto[]>([]);
 
 const favorites = signal<string[]>([
   "fieberbrunn",
@@ -31,7 +31,7 @@ const resortIds = computed<string[]>(() => {
   return resorts.value.map((resort) => resort.id);
 });
 
-const favoriteResorts = computed<ResortListDto[]>(() => {
+const favoriteResorts = computed<ResortDto[]>(() => {
   return resorts.value.filter((resort) => favorites.value.includes(resort.id));
 });
 
@@ -72,19 +72,19 @@ function App() {
 
   useEffect(() => {
     if (sorting.value === "freshSnow") {
-      favoriteResorts.value.sort((a: ResortListDto, b: ResortListDto) =>
+      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
         a.freshSnow - b.freshSnow
       );
     } else if (sorting.value === "mountainHeight") {
-      favoriteResorts.value.sort((a: ResortListDto, b: ResortListDto) =>
+      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
         b.mountainHeight - a.mountainHeight
       );
     } else if (sorting.value === "tmax") {
-      favoriteResorts.value.sort((a: ResortListDto, b: ResortListDto) =>
+      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
         b.dailyForecasts![0].tmax - a.dailyForecasts![0].tmax
       );
     } else if (sorting.value === "sun") {
-      favoriteResorts.value.sort((a: ResortListDto, b: ResortListDto) =>
+      favoriteResorts.value.sort((a: ResortDto, b: ResortDto) =>
         a.dailyForecasts![0].sun - b.dailyForecasts![0].sun
       );
     }
@@ -105,7 +105,11 @@ function App() {
           }}
           tagRenderer={(resort) => resort.name}
           itemRenderer={(resort, { handleClick }) => (
-            <MenuItem onClick={handleClick} text={resort.name} />
+            <MenuItem
+              key={resort.id}
+              onClick={handleClick}
+              text={resort.name}
+            />
           )}
           onRemove={(resort) => {
             favorites.value = favorites.value.filter((id) => id !== resort.id);
@@ -168,77 +172,88 @@ function App() {
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-2">
           {favoriteResorts.value.filter(
             (resort) => compareResortIds.value.includes(resort.id),
-          ).map((resort) => (
-            <Card key={resort.id} elevation={Elevation.THREE} className="!p-0">
-              <ButtonGroup fill>
-                <Button
-                  icon="star"
-                  onClick={() => {
-                    favorites.value = favorites.value.filter(
-                      (id) =>
-                        id !== resort.id,
-                    );
-                  }}
-                >
-                  Remove
-                </Button>
-                <Button
-                  icon="arrow-right"
-                  onClick={() => {
-                    window.location.href = `/resort/${resort.id}`;
-                  }}
-                >
-                  Details
-                </Button>
-              </ButtonGroup>
-              <div className="p-4">
-              <H3 className="bp5-heading !mb-0 truncate max-w-full">{resort.name}</H3>
-              </div>
-              <div className="grid grid-cols-4 grid-rows-2 gap-x-2 gap-y-5 w-full muted-bg">
-                <Statistic
+          ).map((resort) => {
+            return (
+              <Card
+                key={resort.id}
+                elevation={Elevation.THREE}
+                className="!p-0"
+              >
+                <ButtonGroup fill>
+                  <Button
+                    icon="star"
+                    onClick={() => {
+                      favorites.value = favorites.value.filter(
+                        (id) => id !== resort.id,
+                      );
+                    }}
+                  >
+                    Remove
+                  </Button>
+                  <Button
+                    icon="arrow-right"
+                    onClick={() => {
+                      window.location.href = `/resort/${resort.id}`;
+                    }}
+                  >
+                    Details
+                  </Button>
+                </ButtonGroup>
+                <div className="p-4">
+                  <H3 className="bp5-heading !mb-0 truncate max-w-full">
+                    {resort.name}
+                  </H3>
+                </div>
+                <div className="grid grid-cols-4 grid-rows-2 gap-x-2 gap-y-5 w-full muted-bg">
+                  <Statistic
                     label="Tal"
                     value={resort.valleyHeight}
                     append=" cm"
-                />
-                <Statistic
+                  />
+                  <Statistic
                     label="Berg"
                     value={resort.mountainHeight}
                     append=" cm"
-                />
-                <Statistic
+                  />
+                  <Statistic
                     label="Neuschnee"
                     value={resort.freshSnow}
                     append=" cm"
-                />
-                <Statistic
+                  />
+                  <Statistic
                     label="Lifte"
                     value={`${resort.liftsOpen}/${resort.liftsTotal}`}
-                />
-              <Statistic
-                  label="Temperatur"
-                  value={`${resort.dailyForecasts![0].tmax}° / ${
-                    resort.dailyForecasts![0].tmin
-                  }°`}
-                />
-                <Statistic
-                  label="Sonne"
-                  value={resort.dailyForecasts![0].sun}
-                  append=" h"
-                />
-                <Statistic
-                  label="Wind"
-                  value={resort.dailyForecasts![0].wind}
-                />
-                <Statistic
-                  label="Regenrisiko"
-                  value={(resort.dailyForecasts![0].rainRisc) * 100}
-                  append=" %"
-                />
-              </div>
+                  />
+                  <Statistic
+                    label="Temperatur"
+                    value={`${resort.dailyForecasts![0].tmax}° / ${
+                      resort.dailyForecasts![0].tmin
+                    }°`}
+                  />
+                  <Statistic
+                    label="Sonne"
+                    value={resort.dailyForecasts![0].sun}
+                    append=" h"
+                  />
+                  <Statistic
+                    label="Wind"
+                    value={resort.dailyForecasts![0].wind}
+                  />
+                  <Statistic
+                    label="Regenrisiko"
+                    value={(resort.dailyForecasts![0].rainRisc) * 100}
+                    append=" %"
+                  />
+                </div>
 
-              <ForecastTable forecasts={resort.dailyForecasts!} />
-            </Card>
-          ))}
+                <ForecastTable
+                  resortId={resort.id}
+                  dailyForecasts={resort.dailyForecasts!}
+                  hourlyForecasts={resort.hourlyForecasts!}
+                />
+              </Card>
+            );
+          })}
         </div>
       </div>
     </div>

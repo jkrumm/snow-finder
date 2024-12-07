@@ -191,11 +191,11 @@ export class Weather {
     return this;
   };
 
-  getResortListDtos = async (): Promise<ResortListDto[]> => {
+  getResortDtos = async (): Promise<ResortDto[]> => {
     await this.updateResorts();
-    const resortListDtos: ResortListDto[] = [];
+    const resortListDtos: ResortDto[] = [];
     for (const resort of this.resorts) {
-      resortListDtos.push(await resort.toResortListDto());
+      resortListDtos.push(await resort.toResortDto());
     }
     return resortListDtos;
   };

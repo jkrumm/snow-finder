@@ -14,14 +14,13 @@ export const fetchHourlyForecast = async (
 ): Promise<Forecast[]> => {
   const forecastHourly: Forecast[] = [];
 
-  for (let day = 0; day <= 5; day++) {
-    const html = await fetchPage(
-      `https://www.bergfex.at/${skiAreaUrl}/wetter/prognose/#day${day}`,
-    );
-    const $ = cheerio.load(html);
+  const html = await fetchPage(
+    `https://www.bergfex.at/${skiAreaUrl}/wetter/prognose/#day0`,
+  );
+  const $ = cheerio.load(html);
 
-    $(".interval.fields").each((hour, element) => {
-      // const date = $(element).find(".time.offset").text().trim();
+  $(".forecast-day-detail").each((day, dayElement) => {
+    $(dayElement).find(".interval.fields").each((hour, element) => {
       const date = DateTime.now().startOf("day").plus({
         days: day,
         hours: hour * 3 + 1,
@@ -64,7 +63,7 @@ export const fetchHourlyForecast = async (
         wind,
       });
     });
-  }
+  });
 
   return forecastHourly;
 };
