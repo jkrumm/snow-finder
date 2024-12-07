@@ -1,10 +1,9 @@
 import OpenAI from "@openai/openai";
 import { ResortDto } from "../../shared/dtos/weather.dto.ts";
 import { DateTime } from "luxon";
+import { env } from "node:process";
 
-const client = new OpenAI({
-  apiKey: Deno.env.get("OPENAI_API_KEY"),
-});
+let client: OpenAI | undefined;
 
 export interface PowderQualityIndex {
   date: DateTime;
@@ -15,6 +14,15 @@ export interface PowderQualityIndex {
 export async function generatePowderQualityIndex(
   resort: ResortDto,
 ): Promise<PowderQualityIndex[]> {
+  if (!client) {
+    client = new OpenAI({
+      apiKey: Deno.env.get("OPENAI_API_KEY") || env.OPENAI_API_KEY,
+    });
+  }
+  if (!client) {
+    throw new Error("OpenAI client not initialized");
+  }
+
   const systemPrompt = `
     You are an expert ski conditions analyst. Your task is to evaluate the powder quality for freeskiing for a ski resort based on the given weather data.
     
@@ -54,7 +62,9 @@ export async function generatePowderQualityIndex(
     Forecasts:
     ${
     resort.dailyForecasts.map((f) => `
-      Date: ${f.date}, Weekday: ${DateTime.fromISO(f.date).toFormat("cccc")}, Max temperature: ${f.tmax}°C, Min temperature: ${f.tmin}°C, Snowline: ${f.snowline}m, Fresh Snow: ${f.freshSnow}cm, Precipitation Risk: ${
+      Date: ${f.date}, Weekday: ${
+      DateTime.fromISO(f.date).toFormat("cccc")
+    }, Max temperature: ${f.tmax}°C, Min temperature: ${f.tmin}°C, Snowline: ${f.snowline}m, Fresh Snow: ${f.freshSnow}cm, Precipitation Risk: ${
       f.rainRisc * 100
     }% Precipitation Amount: ${f.rainAmount}l, Sun: ${f.sun}h, Wind Direction: ${f.windDirection}, Wind Bft: ${f.windBft}
     `).join("")

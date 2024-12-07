@@ -138,7 +138,7 @@ export function Favorites() {
             />
           </FormGroup>
         </Card>
-        <Card compact>
+        <Card compact className="!mb-3 @lg:!mb-0">
           <H3>Region filtern</H3>
           <FormGroup className="!mb-0 !mt-3">
             <Switch
