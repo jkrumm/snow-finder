@@ -37,7 +37,7 @@ export const fetchDailyForecast = async (
         $(element).find(".tmin").text().trim(),
       );
       const freshSnow = convertCmToNumber(
-        $(element).find(".group.nschnee").text().trim(),
+        $(element).find(".nschnee").text().trim(),
       );
       const rainRisc = convertPercentageToNumber(
         $(element).find(".rrp").text().trim(),

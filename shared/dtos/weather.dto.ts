@@ -1,4 +1,5 @@
 export interface ForecastDto {
+    date: string;
   img: string;
   tmax: number;
   tmin: number;

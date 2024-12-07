@@ -5,7 +5,7 @@ export const fetchPage = async (url: string): Promise<string> => {
 
 export const convertCmToNumber = (str: string): number => {
     if (str === "-") return 0;
-    return Number(str.replace(" cm", ""));
+    return Number(str.replace("cm", "").trim());
 };
 
 export const convertPercentageToNumber = (str: string): number => {
