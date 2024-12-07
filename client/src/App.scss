@@ -13,18 +13,18 @@
     bottom: 0;
   }
 
-  .bp5-button-text {
-    @media (max-width: 640px) {
-      display: none;
-    }
-  }
-
-  .bp5-icon {
-    @media (max-width: 640px) {
-      margin-right: 7px;
-      margin-left: 7px;
-    }
-  }
+  //.bp5-button-text {
+  //  @media (max-width: 640px) {
+  //    display: none;
+  //  }
+  //}
+  //
+  //.bp5-icon {
+  //  @media (max-width: 640px) {
+  //    margin-right: 7px;
+  //    margin-left: 7px;
+  //  }
+  //}
 }
 
 #wrapper {

@@ -85,26 +85,26 @@ export function Weather() {
               elevation={Elevation.THREE}
               className="!p-0"
             >
-              <ButtonGroup fill>
-                <Button
-                  icon="star"
-                  onClick={() => {
-                    favorites.value = favorites.value.filter(
-                      (id) => id !== resort.id,
-                    );
-                  }}
-                >
-                  Entfernen
-                </Button>
-                <Button
-                  icon="arrow-right"
-                  onClick={() => {
-                    window.location.href = `/resort/${resort.id}`;
-                  }}
-                >
-                  Details
-                </Button>
-              </ButtonGroup>
+              {/*<ButtonGroup fill>*/}
+              {/*  <Button*/}
+              {/*    icon="star"*/}
+              {/*    onClick={() => {*/}
+              {/*      favorites.value = favorites.value.filter(*/}
+              {/*        (id) => id !== resort.id,*/}
+              {/*      );*/}
+              {/*    }}*/}
+              {/*  >*/}
+              {/*    Entfernen*/}
+              {/*  </Button>*/}
+              {/*  <Button*/}
+              {/*    icon="arrow-right"*/}
+              {/*    onClick={() => {*/}
+              {/*      window.location.href = `/resort/${resort.id}`;*/}
+              {/*    }}*/}
+              {/*  >*/}
+              {/*    Details*/}
+              {/*  </Button>*/}
+              {/*</ButtonGroup>*/}
               <div className="flex justify-between">
                 <H3
                   className={`bp5-heading !m-3 !mt-3 !mb-1 flex-1 truncate`}
@@ -156,7 +156,7 @@ export function Weather() {
                     key={status.title}
                     content={status.tooltip}
                     position="bottom"
-                    className="flex-1 m-2"
+                    className="flex-1 m-2 overflow-hidden"
                   >
                     <Callout
                       icon={false}

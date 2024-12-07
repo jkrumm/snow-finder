@@ -214,7 +214,7 @@ export const ForecastTable = (
                 setSelectedView(index - 1);
               }}
             >
-              <div className="flex flex-col h-[56px] justify-center py-2 pl-2">
+              <div className="flex flex-col h-[45px] sm:h-[56px] justify-center py-0 sm:py-2 pl-2">
                 <span className="truncate">{dateLabel}</span>
                 <span className="text-sm muted">
                   {new Date(forecast.date).toLocaleDateString("de-DE", {
@@ -223,14 +223,14 @@ export const ForecastTable = (
                   })}
                 </span>
               </div>
-              <div className="flex justify-center h-[56px] items-center py-2">
+              <div className="flex justify-center h-[45px] sm:h-[56px] items-center py-0 sm:py-2">
                 <img
                   src={`https://vcdn.bergfex.at/images/wetter/bergfex-shaded/${forecast.img}`}
                   alt={`weather-img-${forecast.date}`}
                   width="40"
                 />
               </div>
-              <div className="flex justify-center h-[56px] flex-col items-center py-2">
+              <div className="flex justify-center h-[45px] sm:h-[56px] flex-col items-center py-0 sm:py-2">
                 <span>{`${forecast.tmax}°/${forecast.tmin}°`}</span>
                 {!!forecast.snowline &&
                   (!!forecast.freshSnow || !!forecast.rainAmount) &&
@@ -245,7 +245,7 @@ export const ForecastTable = (
                 className={windBgColor}
               >
                 <div
-                  className={`flex justify-center h-[56px] flex-col items-center py-2`}
+                  className={`flex justify-center h-[45px] sm:h-[56px] flex-col items-center py-0 sm:py-2`}
                 >
                   <span>
                     {forecast.windBft}
@@ -256,7 +256,7 @@ export const ForecastTable = (
                 </div>
               </Tooltip>
               <div
-                className={`flex justify-center h-[56px] flex-col items-center py-2 ${snowColor}`}
+                className={`flex justify-center h-[45px] sm:h-[56px] flex-col items-center py-0 sm:py-2 ${snowColor}`}
               >
                 {(!!forecast.freshSnow || !!forecast.rainAmount) && (
                   <>
@@ -273,7 +273,7 @@ export const ForecastTable = (
                 )}
               </div>
               <div
-                className={`flex justify-center h-[56px] items-center py-2 ${sunBgColor}`}
+                className={`flex justify-center h-[45px] sm:h-[56px] items-center py-0 sm:py-2 ${sunBgColor}`}
               >
                 <span>{`${forecast.sun} h`}</span>
               </div>
@@ -284,7 +284,7 @@ export const ForecastTable = (
                   popoverClassName="w-[360px] text-center"
                 >
                   <div
-                    className={`flex flex-col h-[56px] justify-center items-center py-2`}
+                    className={`flex flex-col h-[45px] sm:h-[45px] sm:h-[56px] justify-center items-center py-0 sm:py-2`}
                   >
                     <span>{forecast.pqi ?? 0}</span>
                   </div>
