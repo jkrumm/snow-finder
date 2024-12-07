@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Forecast } from "../../../server/data/weather.ts";
-import { Button, ButtonGroup } from "@blueprintjs/core";
+import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 
 import { DateTime } from "luxon";
 
@@ -133,7 +133,27 @@ export const ForecastTable = (
             sunBgColor = `bg-yellow-extreme`;
           }
 
-          const windBgColor = `bg-[#252a31]`;
+          const windSpeed = parseInt(forecast.wind.split(" ")[1]);
+          const windDirection = forecast.wind.split(" ")[0];
+
+          let windBgColor = `bg-[#252a31]`;
+          let windDescription = "0-11km/h";
+          if (windSpeed > 2) {
+            windBgColor = `bg-red-low`;
+            windDescription = "12-19km/h";
+          }
+          if (windSpeed > 3) {
+            windBgColor = `bg-red-medium`;
+            windDescription = "20-28km/h";
+          }
+          if (windSpeed > 4) {
+            windBgColor = `bg-red-high`;
+            windDescription = "29-38km/h";
+          }
+          if (windSpeed > 5) {
+            windBgColor = `bg-red-extreme`;
+            windDescription = "+39km/h";
+          }
 
           return (
             <div
@@ -165,13 +185,16 @@ export const ForecastTable = (
               <div className="flex justify-center items-center py-2">
                 <span>{`${forecast.tmax}°/${forecast.tmin}°`}</span>
               </div>
+              <Tooltip content={windDescription} position="top">
+                <div
+                  className={`flex justify-center flex-col items-center py-2 bg-opacity-20 ${windBgColor}`}
+                >
+                  <span>{windSpeed}</span>
+                  <span className="text-sm muted">{windDirection}</span>
+                </div>
+              </Tooltip>
               <div
-                className={`flex justify-center items-center py-2 bg-opacity-20 ${windBgColor}`}
-              >
-                <span>{forecast.wind}</span>
-              </div>
-              <div
-                className={`flex justify-center flex-col items-center py-2  bg-opacity-20 ${snowColor}`}
+                className={`flex justify-center flex-col items-center py-2 bg-opacity-20 ${snowColor}`}
               >
                 <span>{`${forecast.freshSnow ?? 0} cm`}</span>
                 <span className="text-sm muted">
