@@ -1,8 +1,8 @@
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 
 export interface Status {
-    intend: "primary" | "success" | "warning" | "danger";
-    title: string;
+  intend: "primary" | "success" | "warning" | "danger";
+  title: string;
 }
 
 export const getStatuses = (resort: ResortDto): Status[] => {
@@ -11,6 +11,15 @@ export const getStatuses = (resort: ResortDto): Status[] => {
   const isAfter12 = new Date().getHours() >= 12;
 
   const day = resort.dailyForecasts![isAfter12 ? 1 : 0] || null;
+
+  if (!day) {
+    statuses.push({
+      intend: "danger",
+      title: "Keine Daten",
+    });
+    return statuses;
+  }
+
   const wind = day!.wind.split(" ")[1]
     ? parseInt(day!.wind.split(" ")[1])
     : null;

@@ -11,7 +11,7 @@ import {
 } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { ForecastTable } from "./forecast-table.tsx";
-import {getStatuses, Status} from "../helpers/status.helper.ts";
+import { getStatuses, Status } from "../helpers/status.helper.ts";
 
 export const resorts = signal<ResortDto[]>([]);
 
@@ -81,7 +81,7 @@ export function Weather() {
     <div className="w-[1600px] max-w-screen p-4">
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-2">
         {favoriteResorts.value.map((resort) => {
-            const statuses = getStatuses(resort);
+          const statuses = getStatuses(resort);
           return (
             <Card
               key={resort.id}
@@ -109,23 +109,23 @@ export function Weather() {
                   Details
                 </Button>
               </ButtonGroup>
-                <H3
-                  className={`bp5-heading !m-3 !mb-1 truncate`}
-                >
-                  {resort.name}
-                </H3>
-                <div className="flex">
-                    {statuses.map((status: Status) => (
-                        <Callout
-                            key={status.title}
-                            icon={false}
-                            className={`m-2 truncate text-center`}
-                            intent={status.intend}
-                            title={status.title}
-                            compact
-                        />
-                    ))}
-                </div>
+              <H3
+                className={`bp5-heading !m-3 !mb-1 truncate`}
+              >
+                {resort.name}
+              </H3>
+              <div className="flex">
+                {statuses.map((status: Status) => (
+                  <Callout
+                    key={status.title}
+                    icon={false}
+                    className={`m-2 truncate text-center`}
+                    intent={status.intend}
+                    title={status.title}
+                    compact
+                  />
+                ))}
+              </div>
               <div className="grid grid-cols-4 grid-rows-2 gap-x-2 gap-y-5 w-full muted-bg">
                 <Statistic
                   label="Tal"
