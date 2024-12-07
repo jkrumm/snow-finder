@@ -3,7 +3,7 @@ import { fetchResorts } from "../util/fetch-resorts.helper.ts";
 import { isElapsed } from "../util/date.helper.ts";
 import { fetchDailyForecast } from "../util/fetch-daily-forecast.helper.ts";
 import { fetchHourlyForecast } from "../util/fetch-hourly-forecast.helper.ts";
-import { ResortDto, ResortListDto } from "../../shared/dtos/weather.dto.ts";
+import { ResortDto } from "../../shared/dtos/weather.dto.ts";
 
 export class Forecast {
   date: DateTime;
@@ -179,11 +179,11 @@ export class Weather {
 
   getResortDtos = async (): Promise<ResortDto[]> => {
     await this.updateResorts();
-    const resortListDtos: ResortDto[] = [];
+    const resortDtos: ResortDto[] = [];
     for (const resort of this.resorts) {
-      resortListDtos.push(await resort.toResortDto());
+      resortDtos.push(await resort.toResortDto());
     }
-    return resortListDtos;
+    return resortDtos;
   };
 
   getResort = async (id: string): Promise<ResortDto> => {

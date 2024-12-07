@@ -9,7 +9,7 @@ export interface ForecastDto {
   wind: string;
 }
 
-export interface ResortListDto {
+export interface ResortDto {
   id: string;
   name: string;
   valleyHeight: number;
@@ -18,8 +18,5 @@ export interface ResortListDto {
   liftsOpen: number;
   liftsTotal: number;
   dailyForecasts: ForecastDto[] | null;
-}
-
-export interface ResortDto extends ResortListDto {
   hourlyForecasts: ForecastDto[] | null;
 }

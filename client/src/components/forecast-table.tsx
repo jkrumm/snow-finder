@@ -105,17 +105,18 @@ export const ForecastTable = (
             ? formatDate(dateObj.getTime(), today.getTime())
             : formatTime(dateObj.getTime());
 
+          const snowSensitivity = selectedView === "daily" ? 1 : 0.3;
           let snowColor: string = "bg-[#252a31]";
-          if (forecast.freshSnow > 4) {
+          if (forecast.freshSnow > (4 * snowSensitivity)) {
             snowColor = "bg-blue-low";
           }
-          if (forecast.freshSnow > 9) {
+          if (forecast.freshSnow > (9 * snowSensitivity)) {
             snowColor = "bg-blue-medium";
           }
-          if (forecast.freshSnow > 14) {
+          if (forecast.freshSnow > (14 * snowSensitivity)) {
             snowColor = "bg-blue-high";
           }
-          if (forecast.freshSnow > 19) {
+          if (forecast.freshSnow > (19 * snowSensitivity)) {
             snowColor = "bg-blue-extreme";
           }
 
@@ -137,7 +138,13 @@ export const ForecastTable = (
           const windDirection = forecast.wind.split(" ")[0];
 
           let windBgColor = `bg-[#252a31]`;
-          let windDescription = "0-11km/h";
+          let windDescription = "< 1km/h";
+          if (windSpeed > 0) {
+            windDescription = "1-5km/h";
+          }
+          if (windSpeed > 1) {
+            windDescription = "6-11km/h";
+          }
           if (windSpeed > 2) {
             windBgColor = `bg-red-low`;
             windDescription = "12-19km/h";
@@ -152,7 +159,7 @@ export const ForecastTable = (
           }
           if (windSpeed > 5) {
             windBgColor = `bg-red-extreme`;
-            windDescription = "+39km/h";
+            windDescription = "> 39km/h";
           }
 
           return (
@@ -190,7 +197,7 @@ export const ForecastTable = (
                   className={`flex justify-center flex-col items-center py-2 bg-opacity-20 ${windBgColor}`}
                 >
                   <span>{windSpeed}</span>
-                  <span className="text-sm muted">{windDirection}</span>
+                  <span className="text-sm muted truncate">{windDirection}</span>
                 </div>
               </Tooltip>
               <div

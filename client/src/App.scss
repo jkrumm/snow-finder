@@ -6,8 +6,8 @@
 
 .bp5-navbar {
   @media (max-width: 768px) {
-  position: fixed;
-  bottom: 0;
+    position: fixed;
+    bottom: 0;
   }
 
   .bp5-button-text {
@@ -89,12 +89,22 @@ span.muted {
 .bg-red-low {
   background-color: rgba(172, 47, 51, 0.2);
 }
+
 .bg-red-medium {
   background-color: rgba(172, 47, 51, 0.5);
 }
+
 .bg-red-high {
   background-color: rgba(172, 47, 51, 0.7);
 }
+
 .bg-red-extreme {
   background-color: rgba(172, 47, 51, 0.9);
+}
+
+// FIXES
+.bp5-callout h5 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
