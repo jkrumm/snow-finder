@@ -97,7 +97,7 @@ export function Weather() {
                     );
                   }}
                 >
-                  Remove
+                  Entfernen
                 </Button>
                 <Button
                   icon="arrow-right"
@@ -109,11 +109,23 @@ export function Weather() {
                   Details
                 </Button>
               </ButtonGroup>
-              <H3
-                className={`bp5-heading !m-3 !mb-1 truncate`}
-              >
-                {resort.name}
-              </H3>
+              <div className="flex justify-between">
+                <H3
+                  className={`bp5-heading !m-3 !mb-1 flex-1 truncate`}
+                >
+                  {resort.name}
+                </H3>
+                <div className="grid grid-cols-2 grid-rows-2 mt-2 mr-3">
+                  <span className="muted">TAL</span>
+                  <span className="text-right">
+                    {resort.resortValleyHeight}m
+                  </span>
+                  <span className="muted pr-1">BERG</span>
+                  <span className="text-right">
+                    {resort.resortMountainHeight}m
+                  </span>
+                </div>
+              </div>
               <div className="flex">
                 {statuses.map((status: Status) => (
                   <Callout

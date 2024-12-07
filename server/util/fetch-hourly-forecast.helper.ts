@@ -48,11 +48,17 @@ export async function fetchHourlyForecast(
         $(element).find(".rrr").text().trim().replace("l", ""),
       ) || 0;
       const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
-      const wind = $(element).find(".group .ff").first().text().trim();
+      let wind = $(element).find(".ff").text().trim();
+      if (!wind.split(" ")[1]) {
+        wind = "- 0";
+      }
       const windBft = parseInt(wind.split(" ")[1]);
       const windDirection = wind.split(" ")[0];
       const windSpeed = parseInt(
         $(element).find(".group .ff.ff-kmh").first().text().trim().replace(
+          "-",
+          "0",
+        ).replace(
           " km/h",
           "",
         ),

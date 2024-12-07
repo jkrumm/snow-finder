@@ -20,14 +20,12 @@ export const getStatuses = (resort: ResortDto): Status[] => {
     return statuses;
   }
 
-  const wind = day!.wind.split(" ")[1]
-    ? parseInt(day!.wind.split(" ")[1])
-    : null;
+  const windBft = day!.windBft;
   const freshSnow = isAfter12
     ? resort.dailyForecasts![0].freshSnow
     : day!.freshSnow;
 
-  if (!day || !wind || freshSnow === undefined) {
+  if (!day || !windBft || freshSnow === undefined) {
     statuses.push({
       intend: "danger",
       title: "Keine Daten",
@@ -68,34 +66,24 @@ export const getStatuses = (resort: ResortDto): Status[] => {
   }
 
   // RAIN
-  if (day.tmax < -1 && day.rainRisc > 0.7 && day.freshSnow > 10) {
+  if (day.tmax < 0 && day.rainRisc > 0.7 && day.freshSnow >= 20) {
     statuses.push({
       intend: "danger",
       title: "Schneefall",
     });
   } else if (
-    day.tmax < -1 && day.rainRisc > 0.5 && day.freshSnow > 0
+    day.tmax < 0 && day.rainRisc > 0.5 && day.freshSnow >= 15
   ) {
     statuses.push({
       intend: "warning",
       title: "Schnee",
     });
-  } else if (day.tmax < 2 && day.rainRisc > 0.7) {
-    statuses.push({
-      intend: "danger",
-      title: "Schneeregen",
-    });
-  } else if (day.tmax < 2 && day.rainRisc > 0.5) {
-    statuses.push({
-      intend: "warning",
-      title: "Schneeregen",
-    });
-  } else if (day.tmax >= 2 && day.rainRisc > 0.7) {
+  } else if (day.tmax >= 4 && day.rainRisc > 0.7) {
     statuses.push({
       intend: "danger",
       title: "Regen",
     });
-  } else if (day.tmax >= 2 && day.rainRisc > 0.5) {
+  } else if (day.tmax >= 4 && day.rainRisc > 0.5) {
     statuses.push({
       intend: "warning",
       title: "Regen",
@@ -103,13 +91,13 @@ export const getStatuses = (resort: ResortDto): Status[] => {
   }
 
   // WIND
-  if (wind! > 3 && wind! < 5) {
+  if (windBft! > 3 && windBft! < 5) {
     statuses.push({
       intend: "warning",
       title: "Wind",
     });
   }
-  if (wind! >= 5) {
+  if (windBft! >= 5) {
     statuses.push({
       intend: "danger",
       title: "Wind",
@@ -128,9 +116,9 @@ export const getStatuses = (resort: ResortDto): Status[] => {
   if (day.tmax < -10) {
     statuses.push({
       intend: "danger",
-      title: "Kalt",
+      title: "Sehr Kalt",
     });
-  } else if (day.tmax < -5) {
+  } else if (day.tmax < -7) {
     statuses.push({
       intend: "warning",
       title: "Kalt",

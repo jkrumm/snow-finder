@@ -27,7 +27,7 @@ export async function getRecentResorts(): Promise<Resort[]> {
       dailyForecast.windSpeed = Math.round(
         windSpeeds.reduce((a, b) => a + b, 0) /
           windSpeeds.length,
-      );
+      ) || 0;
 
       const snowlines = hourlyForecastsForDay.map((hourlyForecast) =>
         hourlyForecast.snowline
@@ -35,7 +35,7 @@ export async function getRecentResorts(): Promise<Resort[]> {
       dailyForecast.snowline = Math.round(
         snowlines.reduce((a, b) => a + b, 0) /
           snowlines.length,
-      );
+      ) || 0;
     }
 
     resorts.push(

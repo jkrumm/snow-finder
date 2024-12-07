@@ -62,9 +62,12 @@ export async function fetchDailyForecast(
       );
       const rainAmount = parseFloat(
         $(element).find(".rrr").text().trim().replace("l", ""),
-      );
+      ) || 0;
       const sun = convertHoursToNumber($(element).find(".sonne").text().trim());
-      const wind = $(element).find(".ff").text().trim();
+      let wind = $(element).find(".ff").text().trim();
+        if (!wind.split(" ")[1]) {
+        wind = "- 0";
+      }
       const windBft = parseInt(wind.split(" ")[1]);
       const windDirection = wind.split(" ")[0];
       const windSpeed = 0; // NOTE: gets calculated when fetching hourly forecast

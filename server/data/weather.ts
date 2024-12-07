@@ -134,10 +134,10 @@ export class Weather {
   }
 
   async updateResorts(): Promise<void> {
-    // if (isElapsed(this.lastUpdated, 10)) {
-    this.lastUpdated = DateTime.now();
-    this.resorts = await getRecentResorts();
-    // }
+    if (isElapsed(this.lastUpdated, 10)) {
+      this.lastUpdated = DateTime.now();
+      this.resorts = await getRecentResorts();
+    }
   }
 
   getResortDtos = async (): Promise<ResortDto[]> => {

@@ -88,7 +88,7 @@ export const ForecastTable = (
         </ButtonGroup>
       )}
       <div className="flex flex-col mt-4 mb-[1px] mr-[1px]">
-        <div className="grid grid-cols-[1fr_70px_50px_60px_50px] border-b pb-2 border-[#404854] text-center font-bold">
+        <div className="grid grid-cols-[1fr_70px_70px_60px_50px] border-b pb-2 border-[#404854] text-center font-bold">
           <div className="text-left pl-2">
             {selectedView === "daily"
               ? "9 Tage Vorhersage"
@@ -121,40 +121,40 @@ export const ForecastTable = (
           }
 
           let sunBgColor = `bg-[#252a31]`;
-          if (forecast.sun > 2) {
+          if (forecast.sun >= 3) {
             sunBgColor = `bg-yellow-low`;
           }
-          if (forecast.sun > 4) {
+          if (forecast.sun >= 4) {
             sunBgColor = `bg-yellow-medium`;
           }
-          if (forecast.sun > 6) {
+          if (forecast.sun >= 6) {
             sunBgColor = `bg-yellow-high`;
           }
-          if (forecast.sun > 9) {
+          if (forecast.sun >= 8) {
             sunBgColor = `bg-yellow-extreme`;
           }
 
           let windBgColor = `bg-[#252a31]`;
           let windDescription = "< 1km/h";
-          if (forecast.windSpeed > 0) {
+          if (forecast.windBft > 0) {
             windDescription = "1-5km/h";
           }
-          if (forecast.windSpeed > 1) {
+          if (forecast.windBft > 1) {
             windDescription = "6-11km/h";
           }
-          if (forecast.windSpeed > 2) {
+          if (forecast.windBft > 2) {
             windBgColor = `bg-red-low`;
             windDescription = "12-19km/h";
           }
-          if (forecast.windSpeed > 3) {
+          if (forecast.windBft > 3) {
             windBgColor = `bg-red-medium`;
             windDescription = "20-28km/h";
           }
-          if (forecast.windSpeed > 4) {
+          if (forecast.windBft > 4) {
             windBgColor = `bg-red-high`;
             windDescription = "29-38km/h";
           }
-          if (forecast.windSpeed > 5) {
+          if (forecast.windBft > 5) {
             windBgColor = `bg-red-extreme`;
             windDescription = "> 39km/h";
           }
@@ -162,7 +162,7 @@ export const ForecastTable = (
           return (
             <div
               key={forecast.date}
-              className={`grid grid-cols-[1fr_40px_70px_50px_60px_50px] ${
+              className={`grid grid-cols-[1fr_40px_70px_70px_60px_50px] ${
                 index + 1 !== forecasts.length && "border-b"
               } border-[#404854] ${index < 6 && "cursor-pointer"}`}
               onClick={() => {
@@ -186,8 +186,15 @@ export const ForecastTable = (
                   width="40"
                 />
               </div>
-              <div className="flex justify-center items-center py-2">
+              <div className="flex justify-center flex-col items-center py-2">
                 <span>{`${forecast.tmax}°/${forecast.tmin}°`}</span>
+                {!!forecast.snowline &&
+                  (!!forecast.freshSnow || !!forecast.rainAmount) &&
+                  (
+                    <span className="text-sm muted">
+                      {`${(forecast.snowline)}m`}
+                    </span>
+                  )}
               </div>
               <Tooltip
                 content={windDescription}
@@ -197,7 +204,11 @@ export const ForecastTable = (
                 <div
                   className={`flex justify-center flex-col items-center py-2 bg-opacity-20`}
                 >
-                  <span>{forecast.windSpeed}</span>
+                  <span>
+                    {selectedView === "daily"
+                      ? forecast.windBft
+                      : forecast.windSpeed + "km/h"}
+                  </span>
                   <span className="text-sm muted truncate">
                     {forecast.windDirection}
                   </span>
@@ -206,10 +217,18 @@ export const ForecastTable = (
               <div
                 className={`flex justify-center flex-col items-center py-2 bg-opacity-20 ${snowColor}`}
               >
-                <span>{`${forecast.freshSnow ?? 0} cm`}</span>
-                <span className="text-sm muted">
-                  {`${(forecast.rainRisc * 100).toFixed(0)} %`}
-                </span>
+                {!!forecast.freshSnow && !!forecast.rainAmount && (
+                      <>
+                        <span>{`${forecast.freshSnow ?? 0}cm`}</span>
+                        <span className="text-sm muted">
+                          {`${(forecast.rainRisc * 100).toFixed(0)}%${
+                            forecast.rainAmount
+                              ? ` ${forecast.rainAmount}l`
+                              : ""
+                          }`}
+                        </span>
+                      </>
+                    )}
               </div>
               <div
                 className={`flex justify-center items-center py-2  bg-opacity-20 ${sunBgColor}`}

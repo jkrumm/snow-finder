@@ -23,10 +23,6 @@ export async function fetchResorts(): Promise<FetchResort[]> {
 
   // deno-lint-ignore no-unused-vars
   $("tbody tr").each((index, element) => {
-    if (index > 0) {
-      return;
-    }
-
     const name = $(element).find("td").eq(0).text().trim();
 
     const href = $(element).find("td").eq(0).find("a").attr("href") || null;
