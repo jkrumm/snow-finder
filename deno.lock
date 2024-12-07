@@ -27,17 +27,20 @@
     "npm:@preact/signals-react@^2.2.0": "2.2.0_react@18.3.1",
     "npm:@tailwindcss/container-queries@~0.1.1": "0.1.1_tailwindcss@3.4.16__postcss@8.4.49",
     "npm:@tailwindcss/vite@^4.0.0-beta.5": "4.0.0-beta.5_vite@5.4.11__@types+node@22.5.4_@types+node@22.5.4_lightningcss@1.28.2",
+    "npm:@types/leaflet@^1.9.15": "1.9.15",
     "npm:@types/node@*": "22.5.4",
     "npm:@types/react@^18.3.12": "18.3.12",
     "npm:@vitejs/plugin-react@^4.3.3": "4.3.3_vite@5.4.11__@types+node@22.5.4_@babel+core@7.26.0_@types+node@22.5.4",
     "npm:cheerio@*": "1.0.0",
     "npm:cheerio@1": "1.0.0",
+    "npm:leaflet@^1.9.4": "1.9.4",
     "npm:luxon@*": "3.5.0",
     "npm:luxon@^3.5.0": "3.5.0",
     "npm:normalize.css@^8.0.1": "8.0.1",
     "npm:path-to-regexp@6.2.1": "6.2.1",
     "npm:postcss@^8.4.49": "8.4.49",
     "npm:react-dom@^18.3.1": "18.3.1_react@18.3.1",
+    "npm:react-leaflet@^4.2.1": "4.2.1_leaflet@1.9.4_react@18.3.1_react-dom@18.3.1__react@18.3.1",
     "npm:react-router-dom@^6.28.0": "6.28.0_react@18.3.1_react-dom@18.3.1__react@18.3.1",
     "npm:react@^18.3.1": "18.3.1",
     "npm:sass@^1.82.0": "1.82.0",
@@ -536,6 +539,14 @@
         "use-sync-external-store"
       ]
     },
+    "@react-leaflet/core@2.1.0_leaflet@1.9.4_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-Qk7Pfu8BSarKGqILj4x7bCSZ1pjuAPZ+qmRwH5S7mDS91VSbVVsJSrW4qA+GPrro8t69gFYVMWb1Zc4yFmPiVg==",
+      "dependencies": [
+        "leaflet",
+        "react",
+        "react-dom"
+      ]
+    },
     "@remix-run/router@1.21.0": {
       "integrity": "sha512-xfSkCAchbdG5PnbrKqFWwia4Bi61nH+wm8wLEqfHDyp7Y3dZzgqS2itV8i4gAq9pC2HsTpwyBC6Ds8VHZ96JlA=="
     },
@@ -697,6 +708,15 @@
     },
     "@types/estree@1.0.6": {
       "integrity": "sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw=="
+    },
+    "@types/geojson@7946.0.15": {
+      "integrity": "sha512-9oSxFzDCT2Rj6DfcHF8G++jxBKS7mBqXl5xrRW+Kbvjry6Uduya2iiwqHPhVXpasAVMBYKkEPGgKhd3+/HZ6xA=="
+    },
+    "@types/leaflet@1.9.15": {
+      "integrity": "sha512-7UuggAuAs+mva66gtf2OTB1nEhzU/9JED93TIaOEgvFMvG/dIGQaukHE7izHo1Zd+Ko1L4ETUw7TBc8yUxevpg==",
+      "dependencies": [
+        "@types/geojson"
+      ]
     },
     "@types/node@22.5.4": {
       "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
@@ -1184,6 +1204,9 @@
     "json5@2.2.3": {
       "integrity": "sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg=="
     },
+    "leaflet@1.9.4": {
+      "integrity": "sha512-nxS1ynzJOmOlHp+iL3FyWqK89GtNL8U8rvlMOsQdTTssxZwCXh8N2NB3GDQOL+YR3XnWyZAxwQixURb+FA74PA=="
+    },
     "lightningcss-darwin-arm64@1.28.2": {
       "integrity": "sha512-/8cPSqZiusHSS+WQz0W4NuaqFjquys1x+NsdN/XOHb+idGHJSoJ7SoQTVl3DZuAgtPZwFZgRfb/vd1oi8uX6+g=="
     },
@@ -1468,6 +1491,15 @@
     },
     "react-is@16.13.1": {
       "integrity": "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
+    },
+    "react-leaflet@4.2.1_leaflet@1.9.4_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+      "integrity": "sha512-p9chkvhcKrWn/H/1FFeVSqLdReGwn2qmiobOQGO3BifX+/vV/39qhY8dGqbdcPh1e6jxh/QHriLXr7a4eLFK4Q==",
+      "dependencies": [
+        "@react-leaflet/core",
+        "leaflet",
+        "react",
+        "react-dom"
+      ]
     },
     "react-popper@2.3.0_@popperjs+core@2.11.8_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
       "integrity": "sha512-e1hj8lL3uM+sgSR4Lxzn5h1GxBlpa4CQz0XLF8kx4MDrDRWY0Ena4c97PUeSX9i5W3UAfDP0z0FXCTQkoXUl3Q==",
@@ -1859,12 +1891,15 @@
       "npm:@preact/signals-react@^2.2.0",
       "npm:@tailwindcss/container-queries@~0.1.1",
       "npm:@tailwindcss/vite@^4.0.0-beta.5",
+      "npm:@types/leaflet@^1.9.15",
       "npm:@types/react@^18.3.12",
       "npm:@vitejs/plugin-react@^4.3.3",
       "npm:cheerio@1",
+      "npm:leaflet@^1.9.4",
       "npm:luxon@^3.5.0",
       "npm:normalize.css@^8.0.1",
       "npm:react-dom@^18.3.1",
+      "npm:react-leaflet@^4.2.1",
       "npm:react-router-dom@^6.28.0",
       "npm:react@^18.3.1",
       "npm:sass@^1.82.0",

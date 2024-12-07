@@ -4,6 +4,10 @@
   overflow: hidden;
 }
 
+.leaflet-pane.leaflet-overlay-pane, .leaflet-pane .leaflet-image-layer, .leaflet-pane svg {
+  mix-blend-mode: multiply;
+}
+
 .bp5-navbar {
   @media (max-width: 768px) {
     position: fixed;
