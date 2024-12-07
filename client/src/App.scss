@@ -1,3 +1,39 @@
+#content {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.bp5-navbar {
+  @media (max-width: 768px) {
+  position: fixed;
+  bottom: 0;
+  }
+
+  .bp5-button-text {
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+
+  .bp5-icon {
+    @media (max-width: 640px) {
+      margin-right: 7px;
+      margin-left: 7px;
+    }
+  }
+}
+
+#wrapper {
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  height: calc(100vh - 50px);
+  min-height: calc(100vh - 50px);
+  max-height: calc(100vh - 50px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: Blender Pro, -apple-system, sans-serif;
 }
@@ -7,15 +43,15 @@ h3 {
 }
 
 .muted-bg {
-    background-color: #2F343C;
+  background-color: #2F343C;
   width: calc(100% - 2px);
   margin-left: 1px;
   padding: 10px 0;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
 }
 
 span.muted {
-    color: #8C8C8C;
+  color: #8C8C8C;
 }
 
 .bg-blue-low {
@@ -27,7 +63,7 @@ span.muted {
 }
 
 .bg-blue-high {
-    background-color: rgba(24, 74, 144, 0.7);
+  background-color: rgba(24, 74, 144, 0.7);
 }
 
 .bg-blue-extreme {
