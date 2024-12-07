@@ -1,0 +1,51 @@
+h1, h2, h3, h4, h5, h6 {
+  font-family: Blender Pro, -apple-system, sans-serif;
+}
+
+h3 {
+  font-size: 19px;
+}
+
+.muted-bg {
+    background-color: #2F343C;
+  width: calc(100% - 2px);
+  margin-left: 1px;
+  padding: 10px 0;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+span.muted {
+    color: #8C8C8C;
+}
+
+.bg-blue-low {
+  background-color: rgba(24, 74, 144, 0.2);
+}
+
+.bg-blue-medium {
+  background-color: rgba(24, 74, 144, 0.5);
+}
+
+.bg-blue-high {
+    background-color: rgba(24, 74, 144, 0.7);
+}
+
+.bg-blue-extreme {
+  background-color: rgba(24, 74, 144, 1);
+}
+
+.bg-yellow-low {
+  background-color: rgba(240, 183, 38, 0.2);
+}
+
+.bg-yellow-medium {
+  background-color: rgba(240, 183, 38, 0.5);
+}
+
+.bg-yellow-high {
+  background-color: rgba(240, 183, 38, 0.7);
+}
+
+.bg-yellow-extreme {
+  background-color: rgba(240, 183, 38, 0.9);
+}

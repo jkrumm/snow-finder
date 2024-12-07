@@ -4,6 +4,26 @@
 @import "@blueprintjs/select/lib/css/blueprint-select.css";
 @import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 
+@font-face {
+  font-family: "Blender Pro";
+  src: url("//db.onlinewebfonts.com/t/335787aa6f57d71cabe8eb5dc89c6d6b.eot");
+  src: url("//db.onlinewebfonts.com/t/335787aa6f57d71cabe8eb5dc89c6d6b.eot?#iefix") format("embedded-opentype"),
+  url("//db.onlinewebfonts.com/t/335787aa6f57d71cabe8eb5dc89c6d6b.woff2") format("woff2"),
+  url("//db.onlinewebfonts.com/t/335787aa6f57d71cabe8eb5dc89c6d6b.woff") format("woff"),
+  url("//db.onlinewebfonts.com/t/335787aa6f57d71cabe8eb5dc89c6d6b.ttf") format("truetype"),
+  url("//db.onlinewebfonts.com/t/335787aa6f57d71cabe8eb5dc89c6d6b.svg#Blender Pro") format("svg");
+}
+
+@font-face {
+  font-family: "Blender Pro Bold";
+  src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot");
+  src: url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.eot?#iefix") format("embedded-opentype"),
+  url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff2") format("woff2"),
+  url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.woff") format("woff"),
+  url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.ttf") format("truetype"),
+  url("//db.onlinewebfonts.com/t/a082fd3df68a0b54e0d4d794bc38d268.svg#Blender Pro") format("svg");
+}
+
 :root {
   background-color: #1c2127;
 
