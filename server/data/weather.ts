@@ -122,23 +122,8 @@ export class Resort {
     return this;
   };
 
-  getFirstDailyForecast = async (): Promise<Forecast> => {
-    await this.updateDailyForecast();
-
-    if (!this.dailyForecasts) {
-      throw new Error("Daily forecasts not found");
-    }
-
-    if (this.dailyForecasts.length === 0) {
-      throw new Error("Daily forecasts empty");
-    }
-
-    return this.dailyForecasts[0];
-  };
-
   toResortListDto = async (): Promise<ResortListDto> => {
     await this.updateDailyForecast();
-    const firstDailyForecast = await this.getFirstDailyForecast();
     return {
       id: this.id,
       name: this.name,
@@ -147,16 +132,13 @@ export class Resort {
       freshSnow: this.freshSnow,
       liftsOpen: this.liftsOpen,
       liftsTotal: this.liftsTotal,
-      date: this.date,
-      lastUpdated: this.lastUpdated,
-      firstDailyForecast,
+      dailyForecasts: this.dailyForecasts,
     };
   };
 
   toResortDto = async (): Promise<ResortDto> => {
     await this.updateDailyForecast();
     await this.updateHourlyForecast();
-    const firstDailyForecast = await this.getFirstDailyForecast();
     return {
       id: this.id,
       name: this.name,
@@ -165,12 +147,7 @@ export class Resort {
       freshSnow: this.freshSnow,
       liftsOpen: this.liftsOpen,
       liftsTotal: this.liftsTotal,
-      date: this.date,
-      lastUpdated: this.lastUpdated,
-      firstDailyForecast,
-      dailyForecastUpdated: this.dailyForecastUpdated,
       dailyForecasts: this.dailyForecasts,
-      hourlyForecastUpdated: this.hourlyForecastUpdated,
       hourlyForecasts: this.hourlyForecasts,
     };
   };

@@ -1,31 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
+import { ResortListDto } from "../../shared/dtos/weather.dto.ts";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [resorts, setResorts] = useState<ResortListDto[]>([]);
+
+  const fetchResorts = async () => {
+    if (resorts.length > 0) return;
+    const response = await fetch("http://localhost:8000/api/resorts");
+    setResorts(await response.json());
+  };
+
+  useEffect(() => {
+    fetchResorts().then();
+  }, []);
 
   return (
     <>
+      <h1>Resorts</h1>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src="/react.svg" className="logo react" alt="React logo" />
-        </a>
+        {resorts.map((resort: ResortListDto) => (
+          <div key={resort.id}>{resort.name}</div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count: number) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to TESTER HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   );
 }

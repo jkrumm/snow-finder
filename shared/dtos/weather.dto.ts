@@ -1,5 +1,4 @@
 export interface ForecastDto {
-  date: string;
   img: string;
   tmax: number;
   tmin: number;
@@ -17,14 +16,9 @@ export interface ResortListDto {
   freshSnow: number;
   liftsOpen: number;
   liftsTotal: number;
-  date: string;
-  lastUpdated: string;
-  firstDailyForecast: ForecastDto;
+  dailyForecasts: ForecastDto[] | null;
 }
 
 export interface ResortDto extends ResortListDto {
-  dailyForecastUpdated: string | null;
-  dailyForecasts: ForecastDto[] | null;
-  hourlyForecastUpdated: string | null;
   hourlyForecasts: ForecastDto[] | null;
 }
