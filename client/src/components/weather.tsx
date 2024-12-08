@@ -1,12 +1,10 @@
-import { useEffect } from "react";
-import { computed, signal } from "@preact/signals-react";
+import { signal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { Callout, Card, Elevation, H3, Tooltip } from "@blueprintjs/core";
 import { ForecastTable } from "./forecast-table.tsx";
 import { getStatuses, Status } from "../helpers/status.helper.ts";
-import { fetchResorts } from "../helpers/fetch-client.helper.ts";
 import { Pqi } from "./pqi.tsx";
-import { favoriteResorts, favorites } from "../state/resorts.state.ts";
+import { favoriteResorts } from "../state/resorts.state.ts";
 
 export const showForecasts = signal<boolean>(true);
 
@@ -29,10 +27,6 @@ const Statistic = ({ label, value, prepend, append, className }: {
 
 export function Weather() {
   useSignals();
-
-  useEffect(() => {
-    fetchResorts().then();
-  }, [favorites.value]);
 
   return (
     <div className="w-[1600px] max-w-screen p-2 sm:p-4">

@@ -24,11 +24,6 @@ import { favoriteResorts, favorites, resorts } from "../state/resorts.state.ts";
 export function Favorites() {
   useSignals();
 
-  useEffect(() => {
-    if (resorts.value.length !== 0) return;
-    fetchResorts().then();
-  }, []);
-
   const [search, setSearch] = useState("");
 
   const [superSkiCardFilter, setSuperSkiCardFilter] = useState(false);

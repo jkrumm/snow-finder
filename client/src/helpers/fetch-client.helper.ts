@@ -1,18 +1,24 @@
 import { PqiDto, ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { favoriteResorts, resorts } from "../state/resorts.state.ts";
 
-async function fetchPqiData() {
+let baseUrl: string;
+
+function getBaseUrl(): string {
+  if (baseUrl) return baseUrl;
+  baseUrl = window.location.origin.includes("localhost")
+    ? "http://localhost:8000"
+    : "https://snow-finder.jkrumm.dev";
+  return baseUrl;
+}
+
+export async function fetchPqiData() {
   const favoriteResortsThatNeedPqi = favoriteResorts.value.filter(
     (resort) => resort.dailyForecasts && !resort.dailyForecasts[0].pqi,
   );
 
-  const baseUrl = window.location.origin.includes("localhost")
-    ? "http://localhost:8000"
-    : window.location.origin;
-
   const pqiPromises = favoriteResortsThatNeedPqi.map((resort: ResortDto) =>
     fetch(
-      `${baseUrl}/api/pqi/${resort.id}`,
+      `${getBaseUrl()}/api/pqi/${resort.id}`,
     ).then((response) => response.json() as Promise<PqiDto>)
   );
 
@@ -47,10 +53,6 @@ async function fetchPqiData() {
 
 export async function fetchResorts() {
   if (resorts.value.length > 0) return;
-  const baseUrl = window.location.origin.includes("localhost")
-    ? "http://localhost:8000"
-    : window.location.origin;
-  const response = await fetch(baseUrl + "/api/resorts");
+  const response = await fetch(getBaseUrl() + "/api/resorts");
   resorts.value = await response.json();
-  await fetchPqiData();
 }
