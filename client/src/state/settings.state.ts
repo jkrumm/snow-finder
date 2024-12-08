@@ -12,15 +12,20 @@ export const sorting = useLocalStorageSignal<
 >("sorting", Sortings.freshSnow);
 
 export const showCurrentConditions = useLocalStorageSignal<boolean>(
-    "showCurrentConditions",
-    true,
-    );
+  "showCurrentConditions",
+  true,
+);
 export const showQi = useLocalStorageSignal<boolean>("showQi", true);
 export const showStatuses = useLocalStorageSignal<boolean>(
   "showStatuses",
   true,
 );
 export const showForecasts = useLocalStorageSignal<boolean>(
-    "showForecasts",
-    true,
-    );
+  "showForecasts",
+  true,
+);
+
+export const weatherDayRange = useLocalStorageSignal<[number, number]>(
+  "weatherDayRange",
+  [0, 8],
+);

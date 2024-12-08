@@ -8,6 +8,7 @@ import {
   showForecasts,
   showQi,
   showStatuses,
+  weatherDayRange,
 } from "../state/settings.state.ts";
 
 function Statistic({ label, value, prepend, append, className }: {
@@ -108,6 +109,7 @@ export function Detail({ resort }: { resort: ResortDto }) {
           resortId={resort.id}
           dailyForecasts={resort.dailyForecasts!}
           hourlyForecasts={resort.hourlyForecasts!}
+          days={weatherDayRange.value}
         />
       )}
     </Card>

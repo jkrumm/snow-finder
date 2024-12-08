@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-unused-vars
 import { useEffect, useState } from "react";
 import { Forecast } from "../../../server/data/weather.ts";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
@@ -5,6 +6,7 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { DateTime } from "luxon";
 import { ForecastDto } from "../../../shared/dtos/weather.dto.ts";
 import { translateWeekday } from "../constants/translations.ts";
+import { weatherDayRange } from "../state/settings.state.ts";
 
 function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
@@ -29,6 +31,7 @@ export const ForecastTable = (
     resortId: string;
     dailyForecasts: Forecast[];
     hourlyForecasts: Forecast[];
+    days: [number, number];
   },
 ) => {
   const [selectedView, setSelectedView] = useState<"daily" | number>("daily");
@@ -43,7 +46,7 @@ export const ForecastTable = (
 
   useEffect(() => {
     if (selectedView === "daily") {
-      setForecasts(props.dailyForecasts);
+      setForecasts([...props.dailyForecasts]);
       return;
     }
 
@@ -53,7 +56,7 @@ export const ForecastTable = (
       setSelectedDateWeekday(selectedDate.toFormat("cccc"));
       return date.equals(selectedDate);
     }));
-  }, [selectedView]);
+  }, [selectedView, props.days]);
 
   useEffect(() => {
     setSelectedDate(
@@ -128,6 +131,13 @@ export const ForecastTable = (
           {selectedView === "daily" && <div>QI</div>}
         </div>
         {forecasts.map((forecast: ForecastDto, index: number) => {
+          if (
+            selectedView === "daily" &&
+            (index < props.days[0] || index > props.days[1])
+          ) {
+            return null;
+          }
+
           const dateObj = new Date(forecast.date);
           const dateLabel = selectedView === "daily"
             ? formatDate(dateObj.getTime(), today.getTime())
@@ -207,11 +217,11 @@ export const ForecastTable = (
               className={`grid ${gridConfigContent} ${
                 index + 1 !== forecasts.length && "border-b"
               } border-[#404854] ${
-                (index < 6 && selectedView === "daily") && "cursor-pointer"
+                (index < 5 && selectedView === "daily") && "cursor-pointer"
               }`}
               onClick={() => {
                 if (index > 5 || selectedView !== "daily") return;
-                setSelectedView(index - 1);
+                setSelectedView(index);
               }}
             >
               <div className="flex flex-col h-[45px] sm:h-[56px] justify-center py-0 sm:py-2 pl-2">

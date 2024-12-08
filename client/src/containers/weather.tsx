@@ -11,14 +11,15 @@ import {
   Radio,
   RadioGroup,
   Switch,
+    RangeSlider,
 } from "@blueprintjs/core";
 import { currentView, Views } from "../state/navigation.state.ts";
 import {
-  showCurrentConditions, showForecasts,
-  showQi,
-  showStatuses,
-  sorting,
-  Sortings,
+    showCurrentConditions, showForecasts,
+    showQi,
+    showStatuses,
+    sorting,
+    Sortings, weatherDayRange,
 } from "../state/settings.state.ts";
 
 export function Weather() {
@@ -37,7 +38,7 @@ export function Weather() {
         <Popover
           content={
             <div className="pt-3 pb-1 px-4">
-              <FormGroup label="Ansicht">
+              <FormGroup label="Ansicht einstellen" className="!mb-0">
                 <Switch
                   checked={showCurrentConditions.value}
                   onChange={() => {
@@ -66,6 +67,21 @@ export function Weather() {
                     }}
                     label="Vorhersage anzeigen"
                 />
+                  <FormGroup
+                      label="Vorhersage Tage anzeigen"
+                      className="!mb-1 !mt-5"
+                  >
+                  <RangeSlider
+                      min={1}
+                      max={9}
+                      stepSize={1}
+                      value={[weatherDayRange.value[0] +1, weatherDayRange.value[1] +1]}
+                      onChange={(value) => {
+                          weatherDayRange.value =
+                              [(value as [number, number])[0] - 1, (value as [number, number])[1] - 1];
+                      }}
+                  />
+              </FormGroup>
               </FormGroup>
             </div>
           }
@@ -81,7 +97,7 @@ export function Weather() {
           content={
             <div className="pt-3 pb-1 px-4">
               <RadioGroup
-                label="Ansicht"
+                label="Sortierung ändern"
                 onChange={(e) => {
                   sorting.value = (e as unknown as {
                     target: { value: (typeof Sortings)[keyof typeof Sortings] };
