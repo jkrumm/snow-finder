@@ -158,6 +158,52 @@ span.muted {
   background-color: rgba(35, 133, 81, 0.9);
 }
 
+// MAP
+.color-scale {
+  width: 100%;
+
+  .labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-bottom: 4px;
+  }
+
+  .bars {
+    display: flex;
+    height: 20px;
+
+    .bar {
+      flex: 1;
+
+      &.yellow {
+        background-color: #FFFFB2;
+      }
+      &.green {
+        background-color: #B0FFBC;
+      }
+      &.lightblue {
+        background-color: #8CFFFF;
+      }
+      &.blue {
+        background-color: #19CDFF;
+      }
+      &.indigo {
+        background-color: #1982FF;
+      }
+      &.purple {
+        background-color: #0F5ABE;
+      }
+      &.pink {
+        background-color: #784BFF;
+      }
+      &.red {
+        background-color: #CD0FEB;
+      }
+    }
+  }
+}
+
 // FIXES
 .bp5-callout h5 {
   overflow: hidden;

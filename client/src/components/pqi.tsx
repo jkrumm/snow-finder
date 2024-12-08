@@ -19,13 +19,13 @@ export function Pqi({ resort, index }: { resort: ResortDto; index: number }) {
   }
 
   return (
-    <div className="flex m-2 mb-0 min-h-[96px] border-1 border-[#404854]">
+    <div className="flex m-2 mb-0 min-h-[100px] border-1 border-[#404854]">
       <div
         className={`flex justify-center min-w-[50px] items-center py-2 ${pqiBgColor}`}
       >
         <span>{pqi}</span>
       </div>
-      <div className="flex flex-col justify-center p-3 border-l border-[#404854]">
+      <div className="flex flex-col justify-center px-3 py-1 border-l border-[#404854]">
         <span>{description}</span>
       </div>
     </div>

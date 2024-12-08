@@ -56,3 +56,10 @@ export async function fetchResorts() {
   resorts.value = await response.json();
   await fetchPqiData();
 }
+
+export async function fetchRecentMap(map: string) {
+  const response = await fetch(
+    `${getBaseUrl()}/api/recent-map/${map}`,
+  );
+  return await response.text();
+}

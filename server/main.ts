@@ -11,6 +11,7 @@ import {
 import { DateTime } from "luxon";
 import { isElapsed } from "./util/date.helper.ts";
 import { env } from "node:process";
+import { fetchRecentMap } from "./util/fetch-maps.helper.ts";
 
 export const app = new Application();
 const router = new Router();
@@ -119,6 +120,16 @@ router.get("/api/pqi/:id", async (context) => {
     releaseLock();
     clearTimeout(lockTimeout);
   }
+});
+
+router.get("/api/recent-map/:map", async (context) => {
+  const map = context.params.map;
+
+  if (!map) {
+    throw new Error("Id not given");
+  }
+
+  context.response.body = await fetchRecentMap(map);
 });
 
 app.use(router.routes());
