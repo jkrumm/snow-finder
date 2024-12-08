@@ -6,12 +6,10 @@ export interface Status {
   tooltip?: string;
 }
 
-export function getStatuses(resort: ResortDto): Status[] {
+export function getStatuses(resort: ResortDto, resortIndex: number): Status[] {
   const statuses: Status[] = [];
 
-  const isAfter12 = new Date().getHours() >= 12;
-
-  const day = resort.dailyForecasts![isAfter12 ? 1 : 0] || null;
+  const day = resort.dailyForecasts![resortIndex] || null;
 
   if (!day) {
     statuses.push({
@@ -22,8 +20,8 @@ export function getStatuses(resort: ResortDto): Status[] {
   }
 
   const windBft = day!.windBft;
-  const freshSnow = isAfter12
-    ? resort.dailyForecasts![0].freshSnow
+  const freshSnow = resortIndex > 0
+    ? resort.dailyForecasts![resortIndex - 1].freshSnow
     : day!.freshSnow;
 
   if (!day || !windBft || freshSnow === undefined) {
@@ -35,7 +33,7 @@ export function getStatuses(resort: ResortDto): Status[] {
   }
 
   // LIFTS
-  if (!isAfter12) {
+  if (resortIndex === 0) {
     if (resort.liftsOpen === 0) {
       statuses.push({
         intend: "danger",

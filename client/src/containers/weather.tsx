@@ -148,7 +148,7 @@ export function Weather() {
         />
       </ButtonGroup>
       <div className="w-[1600px] max-w-screen p-2 sm:p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3 gap-2 sm:gap-4">
           {favoriteResorts.value.map((resort) => (
             <Detail
               key={resort.id}

@@ -140,3 +140,52 @@ export async function generatePowderQualityIndex(
     }),
   );
 }
+
+export function getFakePqi(id: string) {
+  return {
+    id,
+    date: DateTime.now().toISODate(),
+    powderQualityIndex: [
+      {
+        date: DateTime.now().toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Heute am 12.12. ist der Schnee mit einer Qualität von 10/10 optimal. Es hat in den letzten Tagen viel geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+      {
+        date: DateTime.now().plus({ days: 1 }).toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Morgen am 13.12. ist der Schnee mit einer Qualität von 8/10 gut. Es hat in den letzten Tagen etwas geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+      {
+        date: DateTime.now().plus({ days: 2 }).toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Dienstag am 14.12. ist der Schnee mit einer Qualität von 6/10 gut. Es hat in den letzten Tagen etwas geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+      {
+        date: DateTime.now().plus({ days: 3 }).toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Mittwoch am 15.12. ist der Schnee mit einer Qualität von 4/10 gut. Es hat in den letzten Tagen etwas geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+      {
+        date: DateTime.now().plus({ days: 4 }).toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Donnerstag am 16.12. ist der Schnee mit einer Qualität von 2/10 gut. Es hat in den letzten Tagen etwas geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+      {
+        date: DateTime.now().plus({ days: 5 }).toISODate(),
+        powderQualityIndex: Math.random,
+        tooltip: "Freitag am 17.12. ist der Schnee mit einer Qualität von 0/10 schlecht. Es hat in den letzten Tagen nichts geschneit und die Temperaturen sind zu warm. Die Sonne scheint heute und der Wind ist stark.",
+      },
+      {
+        date: DateTime.now().plus({ days: 6 }).toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Samstag am 18.12. ist der Schnee mit einer Qualität von 2/10 gut. Es hat in den letzten Tagen etwas geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+      {
+        date: DateTime.now().plus({ days: 7 }).toISODate(),
+        powderQualityIndex: Math.floor(Math.random() * 10),
+        tooltip: "Sonntag am 19.12. ist der Schnee mit einer Qualität von 4/10 gut. Es hat in den letzten Tagen etwas geschneit und die Temperaturen sind ideal. Die Sonne scheint heute nicht und der Wind ist schwach.",
+      },
+    ],
+  };
+}

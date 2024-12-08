@@ -5,6 +5,7 @@ import routeStaticFilesFrom from "./util/routeStaticFilesFrom.ts";
 import { Weather } from "./data/weather.ts";
 import {
   generatePowderQualityIndex,
+  getFakePqi,
   PowderQualityIndex,
 } from "./util/ai-powder-quality.helper.ts";
 import { DateTime } from "luxon";
@@ -93,7 +94,7 @@ router.get("/api/pqi/:id", async (context) => {
     }
 
     if (Deno.env.get("DATA_SAVING")) {
-      context.response.body = [];
+      context.response.body = getFakePqi(id);
       releaseLock();
       clearTimeout(lockTimeout);
       return;

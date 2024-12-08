@@ -31,9 +31,11 @@ export const ForecastTable = (
     dailyForecasts: Forecast[];
     hourlyForecasts: Forecast[];
     days: [number, number];
+    selectedView: number | "daily";
+    setSelectedView: (value: number | "daily") => void;
   },
 ) => {
-  const [selectedView, setSelectedView] = useState<"daily" | number>("daily");
+  const { selectedView, setSelectedView } = props;
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDateWeekday, setSelectedDateWeekday] = useState<string | null>(
     null,
@@ -113,22 +115,24 @@ export const ForecastTable = (
           </Button>
         </ButtonGroup>
       )}
-      <div className="flex flex-col mt-2 mb-[1px] mr-[1px]">
-        <div
-          className={`grid border-b pb-2 border-[#404854] text-center font-bold ${gridConfigLegend}`}
-        >
-          <div className="text-left pl-2">
-            {selectedView === "daily"
-              ? "9 Tage"
-              : `${selectedDate} ${translateWeekday(selectedDateWeekday)}`}
-            <span className="hidden sm:inline">{" "}Vorhersage</span>
+      <div className="flex flex-col mb-[1px] mr-[1px]">
+        {currentView.value === Views.WEATHER && (
+          <div
+            className={`grid border-b pb-2 border-[#404854] text-center font-bold ${gridConfigLegend}`}
+          >
+            <div className="text-left pl-2">
+              {selectedView === "daily"
+                ? "9 Tage"
+                : `${selectedDate} ${translateWeekday(selectedDateWeekday)}`}
+              <span className="hidden sm:inline">{" "}Vorhersage</span>
+            </div>
+            <div>Temp</div>
+            <div>Wind</div>
+            <div>Schnee</div>
+            <div>Sonne</div>
+            {selectedView === "daily" && <div>QI</div>}
           </div>
-          <div>Temp</div>
-          <div>Wind</div>
-          <div>Schnee</div>
-          <div>Sonne</div>
-          {selectedView === "daily" && <div>QI</div>}
-        </div>
+        )}
         {forecasts.map((forecast: ForecastDto, index: number) => {
           if (
             selectedView === "daily" &&
