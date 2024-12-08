@@ -31,7 +31,7 @@ function App() {
         <div className="snowflake-loader">
           <Icon
             className="snowflake-icon"
-            size={60}
+            size={70}
             icon="snowflake"
           />
         </div>

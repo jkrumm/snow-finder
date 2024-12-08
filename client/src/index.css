@@ -40,10 +40,10 @@
 }
 
 .snowflake-icon {
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     color: #f6f7f9;
-    animation: spinAndResize 5s linear infinite;
+    animation: spinAndResize 4s linear infinite;
 }
 
 @keyframes spinAndResize {
@@ -54,7 +54,7 @@
         transform: rotate(120deg) scale(1.3);
     }
     50% {
-        transform: rotate(180deg) scale(1.4);
+        transform: rotate(180deg) scale(1.5);
     }
     66% {
         transform: rotate(240deg) scale(1.3);
