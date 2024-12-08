@@ -1,58 +1,42 @@
 import { Button, Navbar } from "@blueprintjs/core";
-import { getPathTitle, path, Paths, usePath } from "../hooks/use-path.ts";
 import { useSignals } from "@preact/signals-react/runtime";
+import { currentView, Views } from "../state/navigation.state.ts";
 
-export const Navigation = () => {
+export function Navigation() {
   useSignals();
-
-  const { navigate } = usePath();
 
   return (
     <Navbar className="!shadow-none border-t-1 md:border-t-0 md:border-b-1 border-[#404854]">
       <Navbar.Group className="justify-evenly !float-none">
         <Navbar.Heading
           className="hidden sm:inline"
-          onClick={() => navigate(Paths.HOME)}
+          onClick={() => currentView.value = Views.WEATHER}
         >
           SnowFinder
         </Navbar.Heading>
         <Navbar.Divider className="hidden sm:inline" />
-        {/*<Button*/}
-        {/*    className="bp5-minimal"*/}
-        {/*    icon="home"*/}
-        {/*    text={getPathTitle(Paths.HOME)}*/}
-        {/*    active={path.value === Paths.HOME}*/}
-        {/*    onClick={() => navigate(Paths.HOME)}*/}
-        {/*/>*/}
         <Button
           className="bp5-minimal"
           icon="snowflake"
-          text={getPathTitle(Paths.WEATHER)}
-          active={path.value === Paths.WEATHER}
-          onClick={() => navigate(Paths.WEATHER)}
+          text={Views.WEATHER}
+          active={currentView.value === Views.WEATHER}
+          onClick={() => currentView.value = Views.WEATHER}
         />
         <Button
           className="bp5-minimal"
           icon="map"
-          text={getPathTitle(Paths.MAP)}
-          active={path.value === Paths.MAP}
-          onClick={() => navigate(Paths.MAP)}
+          text={Views.MAP}
+          active={currentView.value === Views.MAP}
+          onClick={() => currentView.value = Views.MAP}
         />
         <Button
           className="bp5-minimal"
           icon="star"
-          text={getPathTitle(Paths.FAVORITES)}
-          active={path.value === Paths.FAVORITES}
-          onClick={() => navigate(Paths.FAVORITES)}
+          text={Views.FAVORITES}
+          active={currentView.value === Views.FAVORITES}
+          onClick={() => currentView.value = Views.FAVORITES}
         />
-        {/*<Button*/}
-        {/*    className="bp5-minimal"*/}
-        {/*    icon="cog"*/}
-        {/*    text={getPathTitle(Paths.SETTINGS)}*/}
-        {/*    active={path.value === Paths.SETTINGS}*/}
-        {/*    onClick={() => navigate(Paths.SETTINGS)}*/}
-        {/*/>*/}
       </Navbar.Group>
     </Navbar>
   );
-};
+}
