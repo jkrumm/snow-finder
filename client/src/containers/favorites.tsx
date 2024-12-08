@@ -22,7 +22,7 @@ import { Regions, ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { favoriteResorts, favorites, resorts } from "../state/resorts.state.ts";
 import { getStatuses } from "../helpers/status.helper.ts";
 
-function LabelIntend({ resort }: { resort: ResortDto }) {
+export function LabelIntend({ resort }: { resort: ResortDto }) {
   const isAfter12 = new Date().getHours() >= 12;
   const statuses = getStatuses(resort, isAfter12 ? 1 : 0);
   const { success, danger, warning }: {

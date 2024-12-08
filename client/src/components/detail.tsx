@@ -5,6 +5,7 @@ import { Callout, Card, Elevation, H3, H4, Tooltip } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { currentView, Views } from "../state/navigation.state.ts";
 import { useEffect, useState } from "react";
+import { LabelIntend } from "../containers/favorites.tsx";
 
 function Statistic({ label, value, prepend, append, className }: {
   label: string;
@@ -72,20 +73,21 @@ export function Detail(
       elevation={Elevation.THREE}
       className="!p-0"
       id={resort.id}
+      onClick={() => {
+        if (currentView.value !== Views.LIST) return;
+        currentView.value = Views.WEATHER;
+        window.location.hash = resort.id;
+      }}
     >
       {currentView.value === Views.LIST
         ? (
-          <div
-            onClick={() => {
-              currentView.value = Views.WEATHER;
-              window.location.hash = resort.id;
-            }}
-          >
+          <div className="flex justify-between pr-[5px] pb-[1px]">
             <H4
-              className={`bp5-heading !m-3 !mt-1 !mb-1 flex-1 truncate`}
+              className={`bp5-heading !m-1 !ml-2 flex-1 truncate`}
             >
               {resort.name}
             </H4>
+            <LabelIntend resort={resort} />
           </div>
         )
         : (
