@@ -4,7 +4,7 @@ import { useSignals } from "@preact/signals-react/runtime";
 import { Navigation } from "./components/navigation.tsx";
 import { currentView, Views } from "./state/navigation.state.ts";
 import { fetchResorts } from "./helpers/fetch-client.helper.ts";
-import { favorites, resorts } from "./state/resorts.state.ts";
+import { favorites } from "./state/resorts.state.ts";
 import { Icon } from "@blueprintjs/core";
 import {Weather} from "./containers/weather.tsx";
 import {Favorites} from "./containers/favorites.tsx";
@@ -18,7 +18,6 @@ function App() {
   const [fetching, setFetching] = useState(false);
 
   useEffect(() => {
-    if (resorts.value.length !== 0) return;
     if (fetching) return;
     fetchResorts().then(
       () => setLoading(false),

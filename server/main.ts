@@ -14,7 +14,8 @@ import { env } from "node:process";
 export const app = new Application();
 const router = new Router();
 
-export const baseUrl = Deno.env.get("BASE_URL") || env.BASE_URL || "http://localhost:8000";
+export const baseUrl = Deno.env.get("BASE_URL") || env.BASE_URL ||
+  "http://localhost:8000";
 
 app.use(
   oakCors({
@@ -32,9 +33,31 @@ const pqiMap = new Map<string, {
   powderQualityIndex: PowderQualityIndex[];
 }>();
 
+let apiResortsLocked: boolean = false;
+
 router.get("/api/resorts", async (context) => {
-  context.response.body = await weather.getResortDtos();
+  while (apiResortsLocked) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+
+  apiResortsLocked = true;
+
+  const releaseLock = () => {
+    if (apiResortsLocked) {
+      apiResortsLocked = false;
+    }
+  };
+  const lockTimeout = setTimeout(releaseLock, 2000);
+
+  try {
+    context.response.body = await weather.getResortDtos();
+  } finally {
+    releaseLock();
+    clearTimeout(lockTimeout);
+  }
 });
+
+const pqiIdsLocked: Record<string, boolean> = {};
 
 router.get("/api/pqi/:id", async (context) => {
   const id = context.params.id;
@@ -43,36 +66,58 @@ router.get("/api/pqi/:id", async (context) => {
     throw new Error("Id not given");
   }
 
-  const existingPqi = pqiMap.get(id);
-
-  if (
-    existingPqi &&
-    !isElapsed(DateTime.fromISO(existingPqi.date).startOf("day"), 60)
-  ) {
-    context.response.body = existingPqi;
-    return;
+  while (pqiIdsLocked[id]) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
-  if (Deno.env.get("DATA_SAVING")) {
-    context.response.body = [];
-    return;
-  }
+  pqiIdsLocked[id] = true;
 
-  const resort = await weather.getResort(id);
-
-  const pqi = await generatePowderQualityIndex(resort);
-
-  pqiMap.set(id, {
-    id,
-    date: DateTime.now().toISODate(),
-    powderQualityIndex: pqi,
-  });
-
-  context.response.body = {
-    id,
-    date: DateTime.now().toISODate(),
-    powderQualityIndex: pqi,
+  const releaseLock = () => {
+    if (pqiIdsLocked[id]) {
+      delete pqiIdsLocked[id];
+    }
   };
+  const lockTimeout = setTimeout(releaseLock, 5000);
+
+  try {
+    const existingPqi = pqiMap.get(id);
+
+    if (
+      existingPqi &&
+      !isElapsed(DateTime.fromISO(existingPqi.date).startOf("day"), 60)
+    ) {
+      context.response.body = existingPqi;
+      releaseLock();
+      clearTimeout(lockTimeout);
+      return;
+    }
+
+    if (Deno.env.get("DATA_SAVING")) {
+      context.response.body = [];
+      releaseLock();
+      clearTimeout(lockTimeout);
+      return;
+    }
+
+    const resort = await weather.getResort(id);
+
+    const pqi = await generatePowderQualityIndex(resort);
+
+    pqiMap.set(id, {
+      id,
+      date: DateTime.now().toISODate(),
+      powderQualityIndex: pqi,
+    });
+
+    context.response.body = {
+      id,
+      date: DateTime.now().toISODate(),
+      powderQualityIndex: pqi,
+    };
+  } finally {
+    releaseLock();
+    clearTimeout(lockTimeout);
+  }
 });
 
 app.use(router.routes());
