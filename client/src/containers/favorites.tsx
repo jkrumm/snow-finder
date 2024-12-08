@@ -12,6 +12,7 @@ import {
   MenuItem,
   Slider,
   Switch,
+  Tag,
 } from "@blueprintjs/core";
 import {
   snowCardTirolResortIds,
@@ -19,6 +20,42 @@ import {
 } from "../constants/resorts.ts";
 import { Regions, ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { favoriteResorts, favorites, resorts } from "../state/resorts.state.ts";
+import { getStatuses } from "../helpers/status.helper.ts";
+
+function LabelIntend({ resort }: { resort: ResortDto }) {
+  const isAfter12 = new Date().getHours() >= 12;
+  const statuses = getStatuses(resort, isAfter12 ? 1 : 0);
+  const { success, danger, warning }: {
+    success: number;
+    danger: number;
+    warning: number;
+  } = statuses.reduce(
+    (acc, status) => {
+      if (status.intend === "success") {
+        acc.success++;
+      } else if (status.intend === "danger") {
+        acc.danger++;
+      } else if (status.intend === "warning") {
+        acc.warning++;
+      }
+      return acc;
+    },
+    { success: 0, danger: 0, warning: 0 },
+  );
+  return (
+    <div className="favorite-tags flex justify-end space-x-1 items-center">
+      <div className={`w-5 ${danger > 0 ? "" : "invisible"}`}>
+        {danger > 0 && <Tag intent="danger">{danger}</Tag>}
+      </div>
+      <div className={` w-5 ${warning > 0 ? "" : "invisible"}`}>
+        {warning > 0 && <Tag intent="warning">{warning}</Tag>}
+      </div>
+      <div className={` w-5 ${success > 0 ? "" : "invisible"}`}>
+        {success > 0 && <Tag intent="success">{success}</Tag>}
+      </div>
+    </div>
+  );
+}
 
 export function Favorites() {
   useSignals();
@@ -237,7 +274,9 @@ export function Favorites() {
                     key={resort.id}
                     intent="danger"
                     text={resort.name}
-                    labelElement={<Icon icon="cross" />}
+                    icon={<Icon icon="cross" />}
+                    className="!px-0"
+                    labelElement={<LabelIntend resort={resort} />}
                     onClick={() => {
                       favorites.value = favorites.value.filter((id) =>
                         id !== resort.id
@@ -269,7 +308,9 @@ export function Favorites() {
               <MenuItem
                 key={resort.id}
                 text={resort.name}
-                labelElement={<Icon icon="cross" />}
+                icon={<Icon icon="cross" />}
+                className="!px-0"
+                labelElement={<LabelIntend resort={resort} />}
                 onClick={() => {
                   favorites.value = favorites.value.filter((id) =>
                     id !== resort.id
@@ -301,9 +342,11 @@ export function Favorites() {
               )
               .map((resort: ResortDto) => (
                 <MenuItem
+                    className="!px-0"
                   key={resort.id}
                   text={resort.name}
-                  labelElement={<Icon icon="plus" />}
+                  icon={<Icon icon="plus" />}
+                  labelElement={<LabelIntend resort={resort} />}
                   onClick={() => {
                     favorites.value = [...favorites.value, resort.id];
                   }}
@@ -312,7 +355,7 @@ export function Favorites() {
           </Menu>
         </div>
       </div>
-        <div className="h-1" />
+      <div className="h-1" />
     </div>
   );
 }

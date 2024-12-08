@@ -35,23 +35,9 @@
     padding-bottom: 59px !important;
     background-color: #252a31;
   }
-
-  //.bp5-button-text {
-  //  @media (max-width: 640px) {
-  //    display: none;
-  //  }
-  //}
-  //
-  //.bp5-icon {
-  //  @media (max-width: 640px) {
-  //    margin-right: 7px;
-  //    margin-left: 7px;
-  //  }
-  //}
 }
 
 #wrapper {
-  //max-width: 100vw;
   display: flex;
   justify-content: center; /* Horizontally center */
   height: calc(100vh - 50px);
@@ -61,8 +47,8 @@
   overflow-y: auto;
 
   @media (max-width: 768px) {
-    padding-right: 2px;
-    padding-left: 1px;
+    padding-right: 3px;
+    padding-left: 0;
     margin-top: 0;
     height: calc(100vh - 60px);
     min-height: calc(100vh - 60px);
