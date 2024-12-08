@@ -1,6 +1,6 @@
 {
   "name": "SnowFinder",
-  "short_name": "SF",
+  "short_name": "SnowFinder",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",

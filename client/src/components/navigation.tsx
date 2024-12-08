@@ -17,6 +17,13 @@ export function Navigation() {
         <Navbar.Divider className="hidden sm:inline" />
         <Button
           className="bp5-minimal"
+          icon="menu"
+          text={Views.LIST}
+          active={currentView.value === Views.LIST}
+          onClick={() => currentView.value = Views.LIST}
+        />
+        <Button
+          className="bp5-minimal"
           icon="snowflake"
           text={Views.WEATHER}
           active={currentView.value === Views.WEATHER}

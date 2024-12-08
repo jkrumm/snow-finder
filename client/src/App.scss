@@ -8,21 +8,31 @@
 }
 
 .detail-nav {
-    position: fixed;
-    top: 50px;
-    width: 101vw !important;
+  position: fixed;
+  top: 49px;
+  width: 101vw !important;
   height: 30px;
 
   @media (max-width: 768px) {
     top: unset;
-    bottom: 49px;
+    bottom: 59px;
   }
 }
 
 .bp5-navbar {
+  .bp5-navbar-group > * {
+    margin-bottom: 0;
+  }
+
   @media (max-width: 768px) {
+    .bp5-navbar-group > * {
+      margin-bottom: 7px !important;
+    }
+
     position: fixed;
     bottom: 0;
+    padding-bottom: 59px !important;
+    background-color: #252a31;
   }
 
   //.bp5-button-text {
@@ -46,11 +56,16 @@
   height: calc(100vh - 80px);
   min-height: calc(100vh - 80px);
   max-height: calc(100vh - 80px);
+  padding-right: 0;
   overflow-x: hidden;
   overflow-y: auto;
 
   @media (max-width: 768px) {
+    padding-right: 3px;
     margin-top: 0;
+    height: calc(100vh - 90px);
+    min-height: calc(100vh - 90px);
+    max-height: calc(100vh - 90px);
   }
 }
 

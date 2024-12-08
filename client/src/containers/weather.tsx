@@ -39,13 +39,6 @@ export function Weather() {
   return (
     <div>
       <ButtonGroup fill className="detail-nav">
-        <Button
-          // large
-          icon="menu"
-          // rightIcon="arrow-left"
-          onClick={() => currentView.value = Views.LIST}
-          text="Liste"
-        />
         <Popover
           content={
             <div className="pt-3 pb-1 px-4">
