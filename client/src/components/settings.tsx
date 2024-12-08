@@ -1,6 +1,6 @@
 import { useSignals } from "@preact/signals-react/runtime";
 import { H3, SegmentedControl, Switch } from "@blueprintjs/core";
-import { showForecasts, sorting } from "./weather.tsx";
+import {showForecasts, sorting} from "../containers/weather.tsx";
 
 export function Settings() {
   useSignals();

@@ -11,7 +11,7 @@ function getBaseUrl(): string {
   return baseUrl;
 }
 
-export async function fetchPqiData() {
+async function fetchPqiData() {
   const favoriteResortsThatNeedPqi = favoriteResorts.value.filter(
     (resort) => resort.dailyForecasts && !resort.dailyForecasts[0].pqi,
   );

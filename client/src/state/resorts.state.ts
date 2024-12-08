@@ -1,7 +1,7 @@
 import { computed, signal } from "@preact/signals-react";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { useLocalStorageSignal } from "../helpers/state.helper.ts";
-import { sorting } from "../components/weather.tsx";
+import {sorting} from "../containers/weather.tsx";
 
 export const resorts = signal<ResortDto[]>([]);
 

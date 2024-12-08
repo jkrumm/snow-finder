@@ -23,7 +23,7 @@ function getFromLocalStorage<T extends Storable>(key: string): T | null {
       return parsedValue as T;
     }
   } catch {
-    // Not a JSON object
+    return null;
   }
   if (!isNaN(Number(stringValue))) {
     return Number(stringValue) as T;

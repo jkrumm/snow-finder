@@ -1,14 +1,14 @@
 import "./App.scss";
 import { useEffect, useState } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
-import { Weather } from "./components/weather.tsx";
-import { Favorites } from "./components/favorites.tsx";
-import { Map } from "./components/map.tsx";
 import { Navigation } from "./components/navigation.tsx";
 import { currentView, Views } from "./state/navigation.state.ts";
 import { fetchResorts } from "./helpers/fetch-client.helper.ts";
 import { favorites, resorts } from "./state/resorts.state.ts";
 import { Icon } from "@blueprintjs/core";
+import {Weather} from "./containers/weather.tsx";
+import {Favorites} from "./containers/favorites.tsx";
+import {Map} from "./containers/map.tsx";
 
 function App() {
   useSignals();
