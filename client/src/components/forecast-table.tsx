@@ -5,6 +5,7 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { DateTime } from "luxon";
 import { ForecastDto } from "../../../shared/dtos/weather.dto.ts";
 import { translateWeekday } from "../constants/translations.ts";
+import { currentView, Views } from "../state/navigation.state.ts";
 
 function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
@@ -218,6 +219,10 @@ export const ForecastTable = (
                 (index < 5 && selectedView === "daily") && "cursor-pointer"
               }`}
               onClick={() => {
+                if (currentView.value === Views.LIST) {
+                  currentView.value = Views.WEATHER;
+                  window.location.hash = props.resortId;
+                }
                 if (index > 5 || selectedView !== "daily") return;
                 setSelectedView(index);
               }}

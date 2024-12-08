@@ -38,7 +38,7 @@ export function Weather() {
 
   return (
     <div>
-      <ButtonGroup fill className="!border-t-0">
+      <ButtonGroup fill className="detail-nav">
         <Button
           // large
           icon="menu"

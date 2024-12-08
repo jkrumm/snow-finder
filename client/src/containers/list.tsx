@@ -31,7 +31,7 @@ export function List() {
 
   return (
     <div>
-      <ButtonGroup fill className="!border-t-0">
+      <ButtonGroup fill className="detail-nav">
         <Popover
           content={
             <div className="pt-3 pb-1 px-4">

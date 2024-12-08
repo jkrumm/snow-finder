@@ -7,6 +7,18 @@
   mix-blend-mode: multiply;
 }
 
+.detail-nav {
+    position: fixed;
+    top: 50px;
+    width: 101vw !important;
+  height: 30px;
+
+  @media (max-width: 768px) {
+    top: unset;
+    bottom: 49px;
+  }
+}
+
 .bp5-navbar {
   @media (max-width: 768px) {
     position: fixed;
@@ -28,13 +40,18 @@
 }
 
 #wrapper {
+  margin-top: 30px;
   display: flex;
   justify-content: center; /* Horizontally center */
-  height: calc(100vh - 50px);
-  min-height: calc(100vh - 50px);
-  max-height: calc(100vh - 50px);
+  height: calc(100vh - 80px);
+  min-height: calc(100vh - 80px);
+  max-height: calc(100vh - 80px);
   overflow-x: hidden;
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    margin-top: 0;
+  }
 }
 
 h1, h2, h3, h4, h5, h6 {
