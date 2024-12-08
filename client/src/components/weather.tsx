@@ -1,31 +1,12 @@
 import { useEffect } from "react";
 import { computed, signal } from "@preact/signals-react";
 import { useSignals } from "@preact/signals-react/runtime";
-import {
-  Button,
-  ButtonGroup,
-  Callout,
-  Card,
-  Elevation,
-  H3,
-  Tooltip,
-} from "@blueprintjs/core";
-import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
+import { Callout, Card, Elevation, H3, Tooltip } from "@blueprintjs/core";
 import { ForecastTable } from "./forecast-table.tsx";
 import { getStatuses, Status } from "../helpers/status.helper.ts";
 import { fetchResorts } from "../helpers/fetch-client.helper.ts";
 import { Pqi } from "./pqi.tsx";
-
-export const resorts = signal<ResortDto[]>([]);
-
-export const favorites = signal<string[]>([
-  "fieberbrunn",
-  "kitzbuehel-kirchberg",
-  "axamer-lizum",
-  "hochfuegen",
-  "westendorf",
-  "stanton-stchristoph",
-]);
+import { favoriteResorts, favorites } from "../state/resorts.state.ts";
 
 export const showForecasts = signal<boolean>(true);
 
@@ -45,27 +26,6 @@ const Statistic = ({ label, value, prepend, append, className }: {
     <span className="text-lg font-bold">{prepend}{value}{append}</span>
   </div>
 );
-
-export const favoriteResorts = computed<ResortDto[]>(() => {
-  return resorts.value.filter((resort) => favorites.value.includes(resort.id))
-    .sort(
-      (a: ResortDto, b: ResortDto) => {
-        if (sorting.value === "freshSnow") {
-          return b.freshSnow - a.freshSnow;
-        }
-        if (sorting.value === "mountainHeight") {
-          return b.mountainHeight - a.mountainHeight;
-        }
-        if (sorting.value === "tmax") {
-          return b.dailyForecasts![0].tmax - a.dailyForecasts![0].tmax;
-        }
-        if (sorting.value === "sun") {
-          return b.dailyForecasts![0].sun - a.dailyForecasts![0].sun;
-        }
-        return 0;
-      },
-    );
-});
 
 export function Weather() {
   useSignals();

@@ -13,13 +13,13 @@ import {
   Slider,
   Switch,
 } from "@blueprintjs/core";
-import { favoriteResorts, favorites, resorts } from "./weather.tsx";
 import {
   snowCardTirolResortIds,
   superSkiCardResortIds,
 } from "../constants/resorts.ts";
 import { Regions, ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { fetchResorts } from "../helpers/fetch-client.helper.ts";
+import { favoriteResorts, favorites, resorts } from "../state/resorts.state.ts";
 
 export function Favorites() {
   useSignals();

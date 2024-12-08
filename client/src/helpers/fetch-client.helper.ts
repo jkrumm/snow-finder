@@ -1,5 +1,5 @@
-import { favoriteResorts, resorts } from "../components/weather.tsx";
 import { PqiDto, ResortDto } from "../../../shared/dtos/weather.dto.ts";
+import { favoriteResorts, resorts } from "../state/resorts.state.ts";
 
 async function fetchPqiData() {
   const favoriteResortsThatNeedPqi = favoriteResorts.value.filter(
