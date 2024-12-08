@@ -6,8 +6,9 @@ import { Favorites } from "./components/favorites.tsx";
 import { Map } from "./components/map.tsx";
 import { Navigation } from "./components/navigation.tsx";
 import { currentView, Views } from "./state/navigation.state.ts";
-import { fetchPqiData, fetchResorts } from "./helpers/fetch-client.helper.ts";
+import { fetchResorts } from "./helpers/fetch-client.helper.ts";
 import { favorites, resorts } from "./state/resorts.state.ts";
+import { Icon } from "@blueprintjs/core";
 
 function App() {
   useSignals();
@@ -22,15 +23,17 @@ function App() {
       () => setLoading(false),
       () => setFetching(false),
     );
-    fetchPqiData().then();
   }, [favorites.value]);
 
   if (loading) {
     return (
-      <div className="bp5-dark" id="content">
-        <Navigation />
-        <div id="wrapper">
-          <div className="loading">Loading...</div>
+      <div className="flex justify-center items-center h-screen">
+        <div className="snowflake-loader">
+          <Icon
+            className="snowflake-icon"
+            size={60}
+            icon="snowflake"
+          />
         </div>
       </div>
     );

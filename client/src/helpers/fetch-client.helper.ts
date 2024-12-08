@@ -52,7 +52,7 @@ export async function fetchPqiData() {
 }
 
 export async function fetchResorts() {
-  if (resorts.value.length > 0) return;
   const response = await fetch(getBaseUrl() + "/api/resorts");
   resorts.value = await response.json();
+  await fetchPqiData();
 }
