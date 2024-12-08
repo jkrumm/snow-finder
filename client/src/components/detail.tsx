@@ -82,7 +82,7 @@ export function Detail(
             }}
           >
             <H4
-              className={`bp5-heading !m-3 !mt-2 !mb-1 flex-1 truncate`}
+              className={`bp5-heading !m-3 !mt-1 !mb-1 flex-1 truncate`}
             >
               {resort.name}
             </H4>
@@ -110,8 +110,8 @@ export function Detail(
 
       {showCurrentConditions && (
         <div
-          className={`grid grid-cols-4 gap-x-2 w-full muted-bg mt-2 ${
-            currentView.value === Views.LIST ? "!py-1" : "pt-2"
+          className={`grid grid-cols-4 gap-x-2 w-full muted-bg ${
+            currentView.value === Views.LIST ? "!py-1 mt-1" : "pt-2 mt-2"
           }`}
         >
           <Statistic

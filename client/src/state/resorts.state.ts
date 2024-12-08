@@ -20,6 +20,9 @@ export const favoriteResorts = computed<ResortDto[]>(() => {
     .sort(
       (a: ResortDto, b: ResortDto) => {
         if (currentView.value === Views.WEATHER) {
+          if (sorting.value === Sortings.alphabetical) {
+            return a.name.localeCompare(b.name);
+          }
           if (sorting.value === Sortings.freshSnow) {
             return b.freshSnow - a.freshSnow;
           }
@@ -34,6 +37,9 @@ export const favoriteResorts = computed<ResortDto[]>(() => {
           }
         }
         if (currentView.value === Views.LIST) {
+          if (sortingList.value === Sortings.alphabetical) {
+            return a.name.localeCompare(b.name);
+          }
           if (sortingList.value === Sortings.freshSnow) {
             return b.freshSnow - a.freshSnow;
           }

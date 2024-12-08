@@ -11,7 +11,6 @@ import {
   RangeSlider,
   Switch,
 } from "@blueprintjs/core";
-import { currentView, Views } from "../state/navigation.state.ts";
 import {
   showCurrentConditions,
   showForecasts,
@@ -114,6 +113,10 @@ export function Weather() {
                 }}
                 selectedValue={sorting.value}
               >
+                <Radio
+                  label={Sortings.alphabetical}
+                  value={Sortings.alphabetical}
+                />
                 <Radio label={Sortings.freshSnow} value={Sortings.freshSnow} />
                 <Radio
                   label={Sortings.mountainHeight}

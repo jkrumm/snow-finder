@@ -312,6 +312,7 @@ export function Favorites() {
           </Menu>
         </div>
       </div>
+        <div className="h-1" />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useLocalStorageSignal } from "../helpers/state.helper.ts";
 
 export const Sortings = {
+  alphabetical: "Alphabetisch",
   freshSnow: "Neuschnee",
   mountainHeight: "Schnee Berg",
   tmax: "Temperatur",

@@ -6,10 +6,10 @@ import { currentView, Views } from "./state/navigation.state.ts";
 import { fetchResorts } from "./helpers/fetch-client.helper.ts";
 import { favorites } from "./state/resorts.state.ts";
 import { Icon } from "@blueprintjs/core";
-import {Weather} from "./containers/weather.tsx";
-import {Favorites} from "./containers/favorites.tsx";
-import {Map} from "./containers/map.tsx";
-import {List} from "./containers/list.tsx";
+import { Weather } from "./containers/weather.tsx";
+import { Favorites } from "./containers/favorites.tsx";
+import { Map } from "./containers/map.tsx";
+import { List } from "./containers/list.tsx";
 
 function App() {
   useSignals();
@@ -42,8 +42,8 @@ function App() {
   let Component;
   switch (currentView.value) {
     case Views.LIST:
-        Component = () => <List />;
-        break;
+      Component = () => <List />;
+      break;
     case Views.WEATHER:
       Component = () => <Weather />;
       break;
@@ -61,7 +61,11 @@ function App() {
   return (
     <div className="bp5-dark" id="content">
       <Navigation />
-      <div id="wrapper">
+      <div
+        id="wrapper"
+        className={(currentView.value === Views.LIST ||
+          currentView.value === Views.WEATHER) ? "more-spacing" : ""}
+      >
         <Component />
       </div>
     </div>

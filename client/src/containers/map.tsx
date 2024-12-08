@@ -24,6 +24,8 @@ const redMarker =
 export function Map() {
   useSignals();
 
+  const isAfter12 = new Date().getHours() >= 12;
+
   return (
     <div className="w-full bg-blue-extreme">
       <MapContainer
@@ -42,7 +44,7 @@ export function Map() {
           opacity={1}
         />
         {favoriteResorts.value.map((resort) => {
-          const statuses = getStatuses(resort);
+          const statuses = getStatuses(resort, isAfter12 ? 1 : 0);
           let marker = greenMarker;
           if (statuses.some((status) => status.intend === "danger")) {
             marker = redMarker;
@@ -67,7 +69,7 @@ export function Map() {
 
         {resorts.value.filter((resort) => !favorites.value.includes(resort.id))
           .map((resort) => {
-            const statuses = getStatuses(resort);
+            const statuses = getStatuses(resort, isAfter12 ? 1 : 0);
             let color = "#29A634";
             if (statuses.some((status) => status.intend === "danger")) {
               color = "#CD4246";

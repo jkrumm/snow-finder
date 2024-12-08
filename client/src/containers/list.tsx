@@ -108,6 +108,7 @@ export function List() {
                 }}
                 selectedValue={sortingList.value}
               >
+                <Radio label={Sortings.alphabetical} value={Sortings.alphabetical} />
                 <Radio label={Sortings.freshSnow} value={Sortings.freshSnow} />
                 <Radio
                   label={Sortings.mountainHeight}
