@@ -2,6 +2,10 @@
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: calc(100vw - 5px);
+  }
 }
 
 .leaflet-pane.leaflet-overlay-pane, .leaflet-pane .leaflet-image-layer, .leaflet-pane svg {
@@ -13,6 +17,7 @@
   top: 49px;
   width: 101vw !important;
   height: 30px;
+  left: 0;
 
   @media (max-width: 768px) {
     top: unset;
@@ -38,6 +43,7 @@
 }
 
 #wrapper {
+  margin-top: 0;
   display: flex;
   justify-content: center; /* Horizontally center */
   height: calc(100vh - 50px);
@@ -47,8 +53,6 @@
   overflow-y: auto;
 
   @media (max-width: 768px) {
-    padding-right: 3px;
-    padding-left: 0;
     margin-top: 0;
     height: calc(100vh - 60px);
     min-height: calc(100vh - 60px);
@@ -56,11 +60,13 @@
   }
 
   &.more-spacing {
+    margin-top: 30px;
     height: calc(100vh - 80px);
     min-height: calc(100vh - 80px);
     max-height: calc(100vh - 80px);
 
     @media (max-width: 768px) {
+      margin-top: 0;
       height: calc(100vh - 90px);
       min-height: calc(100vh - 90px);
       max-height: calc(100vh - 90px);
