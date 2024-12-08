@@ -3,13 +3,7 @@ import { Pqi } from "./pqi.tsx";
 import { ForecastTable } from "./forecast-table.tsx";
 import { Callout, Card, Elevation, H3, Tooltip } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
-import {
-  showCurrentConditions,
-  showForecasts,
-  showQi,
-  showStatuses,
-  weatherDayRange,
-} from "../state/settings.state.ts";
+import {currentView, Views} from "../state/navigation.state.ts";
 
 function Statistic({ label, value, prepend, append, className }: {
   label: string;
@@ -26,15 +20,31 @@ function Statistic({ label, value, prepend, append, className }: {
   );
 }
 
-export function Detail({ resort }: { resort: ResortDto }) {
+export function Detail(
+  { resort, showCurrentConditions, showForecasts, showStatuses, showQi, days }:
+    {
+      resort: ResortDto;
+      showCurrentConditions: boolean;
+      showForecasts: boolean;
+      showStatuses: boolean;
+      showQi: boolean;
+      days: [number, number];
+    },
+) {
   const statuses = getStatuses(resort);
   return (
     <Card
       key={resort.id}
       elevation={Elevation.THREE}
       className="!p-0"
+      id={resort.id}
     >
-      <div className="flex justify-between">
+      <div className="flex justify-between" onClick={
+        () => {
+            currentView.value = Views.WEATHER;
+            window.location.hash = resort.id;
+        }
+      }>
         <H3
           className={`bp5-heading !m-3 !mt-3 !mb-1 flex-1 truncate`}
         >
@@ -52,7 +62,7 @@ export function Detail({ resort }: { resort: ResortDto }) {
         </div>
       </div>
 
-      {showCurrentConditions.value && (
+      {showCurrentConditions && (
         <div className="grid grid-cols-4 grid-rows-1 gap-x-2 gap-y-5 w-full muted-bg mt-2 pt-2">
           <Statistic
             label="Tal"
@@ -76,14 +86,14 @@ export function Detail({ resort }: { resort: ResortDto }) {
         </div>
       )}
 
-      {showQi.value && (
+      {showQi && (
         <Pqi
           resort={resort}
           index={new Date().getHours() >= 12 ? 1 : 0}
         />
       )}
 
-      {showStatuses.value && (
+      {showStatuses && (
         <div className="flex h-[56px]">
           {statuses.map((status: Status) => (
             <Tooltip
@@ -104,12 +114,12 @@ export function Detail({ resort }: { resort: ResortDto }) {
         </div>
       )}
 
-      {showForecasts.value && (
+      {showForecasts && (
         <ForecastTable
           resortId={resort.id}
           dailyForecasts={resort.dailyForecasts!}
           hourlyForecasts={resort.hourlyForecasts!}
-          days={weatherDayRange.value}
+          days={days}
         />
       )}
     </Card>

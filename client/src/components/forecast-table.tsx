@@ -1,4 +1,3 @@
-// deno-lint-ignore-file no-unused-vars
 import { useEffect, useState } from "react";
 import { Forecast } from "../../../server/data/weather.ts";
 import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
@@ -6,7 +5,6 @@ import { Button, ButtonGroup, Tooltip } from "@blueprintjs/core";
 import { DateTime } from "luxon";
 import { ForecastDto } from "../../../shared/dtos/weather.dto.ts";
 import { translateWeekday } from "../constants/translations.ts";
-import { weatherDayRange } from "../state/settings.state.ts";
 
 function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
