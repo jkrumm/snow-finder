@@ -5,7 +5,7 @@ import { Callout, Card, Elevation, H3, H4, Tooltip } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { currentView, Views } from "../state/navigation.state.ts";
 import { useEffect, useState } from "react";
-import { LabelIntend } from "../containers/favorites.tsx";
+import { StatusTags } from "../containers/favorites.tsx";
 
 function Statistic({ label, value, prepend, append, className }: {
   label: string;
@@ -87,7 +87,7 @@ export function Detail(
             >
               {resort.name}
             </H4>
-            <LabelIntend resort={resort} />
+            <StatusTags resort={resort} />
           </div>
         )
         : (

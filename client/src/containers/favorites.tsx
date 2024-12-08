@@ -21,8 +21,9 @@ import {
 import { Regions, ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { favoriteResorts, favorites, resorts } from "../state/resorts.state.ts";
 import { getStatuses } from "../helpers/status.helper.ts";
+import { useLocalStorageSignal } from "../helpers/state.helper.ts";
 
-export function LabelIntend({ resort }: { resort: ResortDto }) {
+export function StatusTags({ resort }: { resort: ResortDto }) {
   const isAfter12 = new Date().getHours() >= 12;
   const statuses = getStatuses(resort, isAfter12 ? 1 : 0);
   const { success, danger, warning }: {
@@ -57,17 +58,32 @@ export function LabelIntend({ resort }: { resort: ResortDto }) {
   );
 }
 
+const superSkiCardFilter = useLocalStorageSignal<boolean>(
+  "superSkiCardFilter",
+  false,
+);
+const snowCardTirolFilter = useLocalStorageSignal<boolean>(
+  "snowCardTirolFilter",
+  false,
+);
+const tirolFilter = useLocalStorageSignal<boolean>("tirolFilter", true);
+const salzburgerLandFilter = useLocalStorageSignal<boolean>(
+  "salzburgerLandFilter",
+  false,
+);
+const vorarlbergFilter = useLocalStorageSignal<boolean>(
+  "vorarlbergFilter",
+  false,
+);
+const liftSliderFilter = useLocalStorageSignal<number>(
+  "liftSliderFilter",
+  10,
+);
+
 export function Favorites() {
   useSignals();
 
   const [search, setSearch] = useState("");
-
-  const [superSkiCardFilter, setSuperSkiCardFilter] = useState(false);
-  const [snowCardTirolFilter, setSnowCardTirolFilter] = useState(false);
-  const [tirolFilter, setTirolFilter] = useState(true);
-  const [salzburgerLandFilter, setSalzburgerLandFilter] = useState(false);
-  const [vorarlbergFilter, setVorarlbergFilter] = useState(false);
-  const [liftSliderFilter, setLiftSliderFilter] = useState(10);
 
   const [filteredFavorites, setFilteredFavorites] = useState([]);
   const [filteredOutFavorites, setFilteredOutFavorites] = useState([]);
@@ -78,68 +94,58 @@ export function Favorites() {
       resort.name.toLowerCase().includes(search.toLowerCase());
 
     const matchesSuperSkiCard = (resort: ResortDto) =>
-      !superSkiCardFilter || superSkiCardResortIds.includes(resort.id);
+      !superSkiCardFilter.value || superSkiCardResortIds.includes(resort.id);
 
     const matchesSnowCardTirol = (resort: ResortDto) =>
-      !snowCardTirolFilter || snowCardTirolResortIds.includes(resort.id);
+      !snowCardTirolFilter.value || snowCardTirolResortIds.includes(resort.id);
 
     const matchesTirol = (resort: ResortDto) =>
-      !tirolFilter || resort.region === Regions.TIROL;
+      !tirolFilter.value || resort.region === Regions.TIROL;
 
     const matchesSalzburgerLand = (resort: ResortDto) =>
-      !salzburgerLandFilter || resort.region === Regions.SALZBURG;
+      !salzburgerLandFilter.value || resort.region === Regions.SALZBURG;
 
     const matchesVorarlberg = (resort: ResortDto) =>
-      !vorarlbergFilter || resort.region === Regions.VORARLBERG;
+      !vorarlbergFilter.value || resort.region === Regions.VORARLBERG;
 
     const matchesLiftCount = (resort: ResortDto) =>
-      resort.liftsOpen >= liftSliderFilter;
+      resort.liftsOpen >= liftSliderFilter.value;
+
+    const matchesCommonFilters = (resort: ResortDto) =>
+      matchesSearch(resort) &&
+      matchesSuperSkiCard(resort) &&
+      matchesSnowCardTirol(resort) &&
+      matchesTirol(resort) &&
+      matchesSalzburgerLand(resort) &&
+      matchesVorarlberg(resort) &&
+      matchesLiftCount(resort);
 
     const isFavorite = (resort: ResortDto) =>
       favorites.value.includes(resort.id);
 
     setFilteredFavorites(favoriteResorts.value.filter(
-      (resort) =>
-        matchesSearch(resort) &&
-        matchesSuperSkiCard(resort) &&
-        matchesSnowCardTirol(resort) &&
-        matchesTirol(resort) &&
-        matchesSalzburgerLand(resort) &&
-        matchesVorarlberg(resort) &&
-        matchesLiftCount(resort),
+      (resort) => matchesCommonFilters(resort),
     ));
 
     setFilteredOutFavorites(favoriteResorts.value.filter(
       (resort) =>
         !(
-          matchesSearch(resort) &&
-          matchesSuperSkiCard(resort) &&
-          matchesSnowCardTirol(resort) &&
-          matchesTirol(resort) &&
-          matchesSalzburgerLand(resort) &&
-          matchesVorarlberg(resort) &&
-          matchesLiftCount(resort)
+          matchesCommonFilters(resort)
         ),
     ));
 
     setFilteredResorts(resorts.value.filter(
       (resort) =>
-        matchesSearch(resort) &&
         !isFavorite(resort) &&
-        matchesSuperSkiCard(resort) &&
-        matchesSnowCardTirol(resort) &&
-        matchesTirol(resort) &&
-        matchesSalzburgerLand(resort) &&
-        matchesVorarlberg(resort) &&
-        matchesLiftCount(resort),
+        matchesCommonFilters(resort),
     ));
   }, [
     search,
-    superSkiCardFilter,
-    snowCardTirolFilter,
-    tirolFilter,
-    salzburgerLandFilter,
-    liftSliderFilter,
+    superSkiCardFilter.value,
+    snowCardTirolFilter.value,
+    tirolFilter.value,
+    salzburgerLandFilter.value,
+    liftSliderFilter.value,
     favoriteResorts.value,
     resorts.value,
     favorites.value,
@@ -154,16 +160,16 @@ export function Favorites() {
           <H3>Saisonkarten filtern</H3>
           <FormGroup className="!mb-0 !mt-3">
             <Switch
-              checked={superSkiCardFilter}
+              checked={superSkiCardFilter.value}
               onChange={() => {
-                setSuperSkiCardFilter(!superSkiCardFilter);
+                superSkiCardFilter.value = !superSkiCardFilter.value;
               }}
               label="Super Ski Card"
             />
             <Switch
-              checked={snowCardTirolFilter}
+              checked={snowCardTirolFilter.value}
               onChange={() => {
-                setSnowCardTirolFilter(!snowCardTirolFilter);
+                snowCardTirolFilter.value = !snowCardTirolFilter.value;
               }}
               label="Snow Card Tirol"
             />
@@ -173,41 +179,23 @@ export function Favorites() {
           <H3>Region filtern</H3>
           <FormGroup className="!mb-0 !mt-3">
             <Switch
-              checked={tirolFilter}
+              checked={tirolFilter.value}
               onChange={() => {
-                setTirolFilter(!tirolFilter);
-                if (
-                  (salzburgerLandFilter || vorarlbergFilter) && !tirolFilter
-                ) {
-                  setSalzburgerLandFilter(false);
-                  setVorarlbergFilter(false);
-                }
+                tirolFilter.value = !tirolFilter.value;
               }}
               label="Tirol"
             />
             <Switch
-              checked={salzburgerLandFilter}
+              checked={salzburgerLandFilter.value}
               onChange={() => {
-                setSalzburgerLandFilter(!salzburgerLandFilter);
-                if (
-                  (tirolFilter || vorarlbergFilter) && !salzburgerLandFilter
-                ) {
-                  setTirolFilter(false);
-                  setVorarlbergFilter(false);
-                }
+                salzburgerLandFilter.value = !salzburgerLandFilter.value;
               }}
               label="Salzburger Land"
             />
             <Switch
-              checked={vorarlbergFilter}
+              checked={vorarlbergFilter.value}
               onChange={() => {
-                setVorarlbergFilter(!vorarlbergFilter);
-                if (
-                  (salzburgerLandFilter || tirolFilter) && !vorarlbergFilter
-                ) {
-                  setSalzburgerLandFilter(false);
-                  setTirolFilter(false);
-                }
+                vorarlbergFilter.value = !vorarlbergFilter.value;
               }}
               label="Vorarlberg"
             />
@@ -221,9 +209,9 @@ export function Favorites() {
               max={40}
               stepSize={1}
               labelStepSize={10}
-              value={liftSliderFilter}
+              value={liftSliderFilter.value}
               onChange={(value) => {
-                setLiftSliderFilter(value);
+                liftSliderFilter.value = value;
               }}
             />
           </FormGroup>
@@ -276,7 +264,7 @@ export function Favorites() {
                     text={resort.name}
                     icon={<Icon icon="cross" />}
                     className="!px-0"
-                    labelElement={<LabelIntend resort={resort} />}
+                    labelElement={<StatusTags resort={resort} />}
                     onClick={() => {
                       favorites.value = favorites.value.filter((id) =>
                         id !== resort.id
@@ -310,7 +298,7 @@ export function Favorites() {
                 text={resort.name}
                 icon={<Icon icon="cross" />}
                 className="!px-0"
-                labelElement={<LabelIntend resort={resort} />}
+                labelElement={<StatusTags resort={resort} />}
                 onClick={() => {
                   favorites.value = favorites.value.filter((id) =>
                     id !== resort.id
@@ -342,11 +330,11 @@ export function Favorites() {
               )
               .map((resort: ResortDto) => (
                 <MenuItem
-                    className="!px-0"
+                  className="!px-0"
                   key={resort.id}
                   text={resort.name}
                   icon={<Icon icon="plus" />}
-                  labelElement={<LabelIntend resort={resort} />}
+                  labelElement={<StatusTags resort={resort} />}
                   onClick={() => {
                     favorites.value = [...favorites.value, resort.id];
                   }}
