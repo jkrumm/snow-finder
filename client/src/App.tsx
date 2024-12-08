@@ -9,6 +9,7 @@ import { Icon } from "@blueprintjs/core";
 import {Weather} from "./containers/weather.tsx";
 import {Favorites} from "./containers/favorites.tsx";
 import {Map} from "./containers/map.tsx";
+import {List} from "./containers/list.tsx";
 
 function App() {
   useSignals();
@@ -41,6 +42,9 @@ function App() {
 
   let Component;
   switch (currentView.value) {
+    case Views.LIST:
+        Component = () => <List />;
+        break;
     case Views.WEATHER:
       Component = () => <Weather />;
       break;

@@ -111,7 +111,7 @@ export const ForecastTable = (
           </Button>
         </ButtonGroup>
       )}
-      <div className="flex flex-col mt-1 mb-[1px] mr-[1px]">
+      <div className="flex flex-col mt-2 mb-[1px] mr-[1px]">
         <div
           className={`grid border-b pb-2 border-[#404854] text-center font-bold ${gridConfigLegend}`}
         >

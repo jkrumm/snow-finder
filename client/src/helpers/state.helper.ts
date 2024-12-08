@@ -1,34 +1,26 @@
 import { effect, signal } from "@preact/signals-react";
 
-type Storable = number | string | object;
+type Storable = number | string | boolean | object;
 
 function saveToLocalStorage<T extends Storable>(key: string, value: T): void {
-  let stringValue: string;
-  if (typeof value === "object") {
-    stringValue = JSON.stringify(value);
-  } else {
-    stringValue = value.toString();
+  try {
+    const stringValue = JSON.stringify(value);
+    localStorage.setItem(key, stringValue);
+  } catch (error) {
+    console.error(`Error saving to localStorage with key "${key}":`, error);
   }
-  localStorage.setItem(key, stringValue);
 }
 
 function getFromLocalStorage<T extends Storable>(key: string): T | null {
-  const stringValue = localStorage.getItem(key);
-  if (stringValue === null) {
-    return null;
-  }
   try {
-    const parsedValue = JSON.parse(stringValue);
-    if (typeof parsedValue === "object") {
-      return parsedValue as T;
+    const stringValue = localStorage.getItem(key);
+    if (stringValue !== null) {
+      return JSON.parse(stringValue) as T;
     }
-  } catch {
-    return null;
+  } catch (error) {
+    console.error(`Error reading from localStorage with key "${key}":`, error);
   }
-  if (!isNaN(Number(stringValue))) {
-    return Number(stringValue) as T;
-  }
-  return stringValue as T;
+  return null;
 }
 
 export function useLocalStorageSignal<T extends Storable>(

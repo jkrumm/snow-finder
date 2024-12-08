@@ -1,9 +1,14 @@
 import { getStatuses, Status } from "../helpers/status.helper.ts";
 import { Pqi } from "./pqi.tsx";
 import { ForecastTable } from "./forecast-table.tsx";
-import { showForecasts } from "../containers/weather.tsx";
 import { Callout, Card, Elevation, H3, Tooltip } from "@blueprintjs/core";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
+import {
+  showCurrentConditions,
+  showForecasts,
+  showQi,
+  showStatuses,
+} from "../state/settings.state.ts";
 
 function Statistic({ label, value, prepend, append, className }: {
   label: string;
@@ -28,26 +33,6 @@ export function Detail({ resort }: { resort: ResortDto }) {
       elevation={Elevation.THREE}
       className="!p-0"
     >
-      {/*<ButtonGroup fill>*/}
-      {/*  <Button*/}
-      {/*    icon="star"*/}
-      {/*    onClick={() => {*/}
-      {/*      favorites.value = favorites.value.filter(*/}
-      {/*        (id) => id !== resort.id,*/}
-      {/*      );*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    Entfernen*/}
-      {/*  </Button>*/}
-      {/*  <Button*/}
-      {/*    icon="arrow-right"*/}
-      {/*    onClick={() => {*/}
-      {/*      window.location.href = `/resort/${resort.id}`;*/}
-      {/*    }}*/}
-      {/*  >*/}
-      {/*    Details*/}
-      {/*  </Button>*/}
-      {/*</ButtonGroup>*/}
       <div className="flex justify-between">
         <H3
           className={`bp5-heading !m-3 !mt-3 !mb-1 flex-1 truncate`}
@@ -66,51 +51,57 @@ export function Detail({ resort }: { resort: ResortDto }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 grid-rows-1 gap-x-2 gap-y-5 w-full muted-bg mt-2 pt-2">
-        <Statistic
-          label="Tal"
-          value={resort.valleyHeight}
-          append=" cm"
-        />
-        <Statistic
-          label="Berg"
-          value={resort.mountainHeight}
-          append=" cm"
-        />
-        <Statistic
-          label="Neuschnee"
-          value={resort.freshSnow}
-          append=" cm"
-        />
-        <Statistic
-          label="Lifte"
-          value={`${resort.liftsOpen}/${resort.liftsTotal}`}
-        />
-      </div>
+      {showCurrentConditions.value && (
+        <div className="grid grid-cols-4 grid-rows-1 gap-x-2 gap-y-5 w-full muted-bg mt-2 pt-2">
+          <Statistic
+            label="Tal"
+            value={resort.valleyHeight}
+            append=" cm"
+          />
+          <Statistic
+            label="Berg"
+            value={resort.mountainHeight}
+            append=" cm"
+          />
+          <Statistic
+            label="Neuschnee"
+            value={resort.freshSnow}
+            append=" cm"
+          />
+          <Statistic
+            label="Lifte"
+            value={`${resort.liftsOpen}/${resort.liftsTotal}`}
+          />
+        </div>
+      )}
 
-      <Pqi
-        resort={resort}
-        index={new Date().getHours() >= 12 ? 1 : 0}
-      />
+      {showQi.value && (
+        <Pqi
+          resort={resort}
+          index={new Date().getHours() >= 12 ? 1 : 0}
+        />
+      )}
 
-      <div className="flex h-[56px]">
-        {statuses.map((status: Status) => (
-          <Tooltip
-            key={status.title}
-            content={status.tooltip}
-            position="bottom"
-            className="flex-1 m-2 overflow-hidden"
-          >
-            <Callout
-              icon={false}
-              className={`truncate text-center`}
-              intent={status.intend}
-              title={status.title}
-              compact
-            />
-          </Tooltip>
-        ))}
-      </div>
+      {showStatuses.value && (
+        <div className="flex h-[56px]">
+          {statuses.map((status: Status) => (
+            <Tooltip
+              key={status.title}
+              content={status.tooltip}
+              position="bottom"
+              className="flex-1 m-2 mb-1 overflow-hidden"
+            >
+              <Callout
+                icon={false}
+                className={`truncate text-center`}
+                intent={status.intend}
+                title={status.title}
+                compact
+              />
+            </Tooltip>
+          ))}
+        </div>
+      )}
 
       {showForecasts.value && (
         <ForecastTable
