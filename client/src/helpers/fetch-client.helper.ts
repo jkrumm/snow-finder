@@ -12,11 +12,7 @@ function getBaseUrl(): string {
 }
 
 async function fetchPqiData() {
-  const favoriteResortsThatNeedPqi = favoriteResorts.value.filter(
-    (resort) => resort.dailyForecasts && !resort.dailyForecasts[0].pqi,
-  );
-
-  const pqiPromises = favoriteResortsThatNeedPqi.map((resort: ResortDto) =>
+  const pqiPromises = favoriteResorts.value.map((resort: ResortDto) =>
     fetch(
       `${getBaseUrl()}/api/pqi/${resort.id}`,
     ).then((response) => response.json() as Promise<PqiDto>)
@@ -24,7 +20,7 @@ async function fetchPqiData() {
 
   const pqiData = await Promise.all(pqiPromises);
 
-  for (const resort of favoriteResortsThatNeedPqi) {
+  for (const resort of favoriteResorts.value) {
     const matchingPqi = pqiData.find((pqi) => pqi.id === resort.id);
     if (!matchingPqi) {
       return;
@@ -41,7 +37,7 @@ async function fetchPqiData() {
   }
 
   resorts.value = resorts.value.map((resort) => {
-    const matchingResort = favoriteResortsThatNeedPqi.find((r) =>
+    const matchingResort = favoriteResorts.value.find((r) =>
       r.id === resort.id
     );
     if (matchingResort) {

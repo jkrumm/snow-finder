@@ -1,29 +1,19 @@
 import "./App.scss";
-import { useEffect, useState } from "react";
 import { useSignals } from "@preact/signals-react/runtime";
 import { Navigation } from "./components/navigation.tsx";
 import { currentView, Views } from "./state/navigation.state.ts";
-import { fetchResorts } from "./helpers/fetch-client.helper.ts";
 import { favorites } from "./state/resorts.state.ts";
 import { Icon } from "@blueprintjs/core";
 import { Weather } from "./containers/weather.tsx";
 import { Favorites } from "./containers/favorites.tsx";
 import { Map } from "./containers/map.tsx";
 import { List } from "./containers/list.tsx";
+import useFetchResorts from "./hooks/use-fetch-resorts.tsx";
 
 function App() {
   useSignals();
 
-  const [loading, setLoading] = useState(true);
-  const [fetching, setFetching] = useState(false);
-
-  useEffect(() => {
-    if (fetching) return;
-    fetchResorts().then(
-      () => setLoading(false),
-      () => setFetching(false),
-    );
-  }, [favorites.value]);
+  const { loading } = useFetchResorts(favorites.value);
 
   if (loading) {
     return (
@@ -64,7 +54,9 @@ function App() {
       <div
         id="wrapper"
         className={(currentView.value === Views.LIST ||
-          currentView.value === Views.WEATHER) ? "more-spacing" : ""}
+            currentView.value === Views.WEATHER)
+          ? "more-spacing"
+          : ""}
       >
         <Component />
       </div>

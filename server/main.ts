@@ -86,7 +86,7 @@ router.get("/api/pqi/:id", async (context) => {
 
     if (
       existingPqi &&
-      !isElapsed(DateTime.fromISO(existingPqi.date).startOf("day"), 60)
+      !isElapsed(DateTime.fromISO(existingPqi.date), 60)
     ) {
       context.response.body = existingPqi;
       releaseLock();
@@ -107,7 +107,7 @@ router.get("/api/pqi/:id", async (context) => {
 
     pqiMap.set(id, {
       id,
-      date: DateTime.now().toISODate(),
+      date: DateTime.now().toISO(),
       powderQualityIndex: pqi,
     });
 
