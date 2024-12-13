@@ -44,7 +44,7 @@ describe("Application", () => {
     const body = await response.text();
 
     assertEquals(response.status, 200);
-    expect(body).toContain("<title>Vite + React + TS</title>");
+    expect(body).toContain("<title>SnowFinder</title>");
   });
 });
 
