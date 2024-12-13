@@ -6,6 +6,7 @@ import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { currentView, Views } from "../state/navigation.state.ts";
 import { useEffect, useState } from "react";
 import { StatusTags } from "../containers/favorites.tsx";
+import { resortSelectedView } from "../state/resorts.state.ts";
 
 function Statistic({ label, value, prepend, append, className }: {
   label: string;
@@ -48,24 +49,27 @@ export function Detail(
     },
 ) {
   const [selectedView, setSelectedView] = useState<"daily" | number>("daily");
-  const [resortIndex, setResortIndex] = useState<number>(
-    selectedView === "daily"
-      ? new Date().getHours() >= 12 ? 1 : 0
-      : selectedView,
-  );
+  const [resortIndex, setResortIndex] = useState<number>(0);
 
   const [statuses, setStatuses] = useState<Status[]>(
     getStatuses(resort, resortIndex),
   );
 
   useEffect(() => {
-    setResortIndex(
-      selectedView === "daily"
-        ? new Date().getHours() >= 12 ? 1 : 0
-        : selectedView,
+    const rawFind = resortSelectedView.value.find(
+      (view) => view.id === resort.id,
     );
-    setStatuses(getStatuses(resort, resortIndex));
-  }, [selectedView]);
+    let selectedViewInternal: "daily" | number = "daily";
+    if (rawFind && rawFind.view !== undefined) {
+      selectedViewInternal = rawFind.view;
+    }
+    setSelectedView(selectedViewInternal);
+    const resortIndexInternal = selectedViewInternal === "daily"
+      ? new Date().getHours() >= 12 ? 1 : 0
+      : selectedViewInternal;
+    setResortIndex(resortIndexInternal);
+    setStatuses(getStatuses(resort, resortIndexInternal));
+  }, [resortSelectedView.value]);
 
   return (
     <Card
@@ -173,7 +177,6 @@ export function Detail(
           hourlyForecasts={resort.hourlyForecasts!}
           days={days}
           selectedView={selectedView}
-          setSelectedView={setSelectedView}
         />
       )}
     </Card>

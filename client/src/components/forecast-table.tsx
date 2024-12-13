@@ -6,6 +6,7 @@ import { DateTime } from "luxon";
 import { ForecastDto } from "../../../shared/dtos/weather.dto.ts";
 import { translateWeekday } from "../constants/translations.ts";
 import { currentView, Views } from "../state/navigation.state.ts";
+import { resortSelectedView } from "../state/resorts.state.ts";
 
 function formatDate(date: number, today: number): string {
   const formattedDate = new Intl.DateTimeFormat("de-DE", { weekday: "long" })
@@ -32,10 +33,9 @@ export const ForecastTable = (
     hourlyForecasts: Forecast[];
     days: [number, number];
     selectedView: number | "daily";
-    setSelectedView: (value: number | "daily") => void;
   },
 ) => {
-  const { selectedView, setSelectedView } = props;
+  const selectedView = props.selectedView;
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedDateWeekday, setSelectedDateWeekday] = useState<string | null>(
     null,
@@ -86,14 +86,31 @@ export const ForecastTable = (
         <ButtonGroup className="mb-3 mt-1" fill>
           <Button
             onClick={() => {
-              setSelectedView("daily");
+              resortSelectedView.value = resortSelectedView.value.map(
+                (view) => {
+                  if (view.id === props.resortId) {
+                    return { id: props.resortId, view: "daily" };
+                  }
+                  return view;
+                },
+              );
             }}
           >
             Zurück zu Täglich
           </Button>
           <Button
             onClick={() => {
-              setSelectedView(selectedView - 1);
+              resortSelectedView.value = resortSelectedView.value.map(
+                (view) => {
+                  if (view.id === props.resortId) {
+                    return {
+                      id: props.resortId,
+                      view: selectedView as number - 1,
+                    };
+                  }
+                  return view;
+                },
+              );
             }}
             className={selectedView === 0
               ? "!border-t-1 !border-b-1 !border-[#404854] !shadow-none"
@@ -104,7 +121,17 @@ export const ForecastTable = (
           </Button>
           <Button
             onClick={() => {
-              setSelectedView(selectedView + 1);
+              resortSelectedView.value = resortSelectedView.value.map(
+                (view) => {
+                  if (view.id === props.resortId) {
+                    return {
+                      id: props.resortId,
+                      view: selectedView as number + 1,
+                    };
+                  }
+                  return view;
+                },
+              );
             }}
             className={selectedView >= 4
               ? "border-t-1 border-b-1 !border-[#404854] !shadow-none"
@@ -220,7 +247,8 @@ export const ForecastTable = (
               className={`grid ${gridConfigContent} ${
                 index + 1 !== forecasts.length && "border-b"
               } border-[#404854] ${
-                (index < 5 && selectedView === "daily") && "cursor-pointer"
+                (index < 5 && selectedView === "daily") &&
+                "cursor-pointer"
               }`}
               onClick={() => {
                 if (currentView.value === Views.LIST) {
@@ -228,7 +256,14 @@ export const ForecastTable = (
                   window.location.hash = props.resortId;
                 }
                 if (index > 5 || selectedView !== "daily") return;
-                setSelectedView(index);
+                resortSelectedView.value = resortSelectedView.value.map(
+                  (view) => {
+                    if (view.id === props.resortId) {
+                      return { id: props.resortId, view: index };
+                    }
+                    return view;
+                  },
+                );
               }}
             >
               <div className="flex flex-col h-[45px] sm:h-[56px] justify-center py-0 sm:py-2 pl-2">

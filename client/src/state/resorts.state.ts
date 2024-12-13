@@ -1,4 +1,4 @@
-import { computed, signal } from "@preact/signals-react";
+import { computed, signal, effect } from "@preact/signals-react";
 import { ResortDto } from "../../../shared/dtos/weather.dto.ts";
 import { useLocalStorageSignal } from "../helpers/state.helper.ts";
 import { sorting, sortingList, Sortings } from "./settings.state.ts";
@@ -56,4 +56,16 @@ export const favoriteResorts = computed<ResortDto[]>(() => {
         return 0;
       },
     );
+});
+
+// TODO: maybe useMemo would have been the way to go to
+export const resortSelectedView = signal<{id: string, view: "daily" | number}[]>([]);
+
+effect(() => {
+  resortSelectedView.value = favorites.value.map((id) => {
+    return {
+      id,
+      view: "daily",
+    };
+  });
 });
